@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Requester Group -->
+    <record id="group_bd_inventory_requester" model="res.groups">
+        <field name="name">Refyne Stock Requester</field>
+        <field name="implied_ids" eval="[(4, ref('base.group_user')), (4, ref('stock.group_stock_user'))]"/>
+        <field name="comment">Can create and submit internal stock transfer requests, and view alerts.</field>
+    </record>
+
+    <!-- Approver Group -->
+    <record id="group_bd_inventory_approver" model="res.groups">
+        <field name="name">Refyne Stock Transfer Approver</field>
+        <field name="implied_ids" eval="[(4, ref('group_bd_inventory_requester'))]"/>
+        <field name="comment">Can approve or reject submitted stock transfer requests.</field>
+    </record>
+
+    <!-- Manager Group -->
+    <record id="group_bd_inventory_manager" model="res.groups">
+        <field name="name">Refyne Inventory &amp; Approval Manager</field>
+        <field name="implied_ids" eval="[(4, ref('group_bd_inventory_approver')), (4, ref('stock.group_stock_manager'))]"/>
+        <field name="user_ids" eval="[(4, ref('base.user_root')), (4, ref('base.user_admin'))]"/>
+        <field name="comment">Full management access over transfer approval policies, configurations, and records.</field>
+    </record>
+</odoo>

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Transfer Requests Menu under Transfers section -->
+    <menuitem id="menu_bd_stock_transfer_request"
+              name="Transfer Requisitions"
+              parent="stock.menu_stock_transfers"
+              action="action_bd_stock_transfer_request"
+              sequence="20"/>
+
+    <!-- Pending Approvals Menu under Transfers section -->
+    <menuitem id="menu_bd_stock_transfer_pending_approval"
+              name="Pending Transfer Approvals"
+              parent="stock.menu_stock_transfers"
+              action="action_bd_stock_transfer_pending_approval"
+              groups="bd_stock_transfer_approval.group_bd_inventory_approver,bd_stock_transfer_approval.group_bd_inventory_manager"
+              sequence="25"/>
+</odoo>

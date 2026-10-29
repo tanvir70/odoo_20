@@ -1,0 +1,8 @@
+id,name,model_id,group_id/id,operation,domain
+access_bd_stock_transfer_request_user,bd.stock.transfer.request user,bd.stock.transfer.request,bd_stock_transfer_approval.group_bd_inventory_requester,crud,
+access_bd_stock_transfer_request_approver,bd.stock.transfer.request approver,bd.stock.transfer.request,bd_stock_transfer_approval.group_bd_inventory_approver,crud,
+access_bd_stock_transfer_request_manager,bd.stock.transfer.request manager,bd.stock.transfer.request,bd_stock_transfer_approval.group_bd_inventory_manager,crud,
+access_bd_stock_transfer_request_line_user,bd.stock.transfer.request.line user,bd.stock.transfer.request.line,bd_stock_transfer_approval.group_bd_inventory_requester,crud,
+access_bd_stock_transfer_reject_wizard,bd.stock.transfer.reject.wizard user,bd.stock.transfer.reject.wizard,base.group_user,crud,
+rule_bd_stock_transfer_request_multicompany,Stock Transfer Request Multi-Company,bd.stock.transfer.request,,crud,"[('company_id', 'in', company_ids)]"
+rule_bd_stock_transfer_request_line_multicompany,Stock Transfer Line Multi-Company,bd.stock.transfer.request.line,,crud,"[('company_id', 'in', company_ids)]"

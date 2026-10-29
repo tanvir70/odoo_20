@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Course List View -->
+    <record id="view_school_course_list" model="ir.ui.view">
+        <field name="name">school.course.list</field>
+        <field name="model">school.course</field>
+        <field name="arch" type="xml">
+            <list string="Courses">
+                <field name="code"/>
+                <field name="name"/>
+                <field name="teacher_id"/>
+                <field name="credits"/>
+                <field name="student_count"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Course Form View -->
+    <record id="view_school_course_form" model="ir.ui.view">
+        <field name="name">school.course.form</field>
+        <field name="model">school.course</field>
+        <field name="arch" type="xml">
+            <form string="Course">
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_students" type="object" class="oe_stat_button" icon="fa-book">
+                            <field name="student_count" widget="statinfo" string="Enrolled"/>
+                        </button>
+                    </div>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="code" placeholder="Course Code (e.g. MATH-101)" required="1"/>
+                        </h1>
+                        <h2>
+                            <field name="name" placeholder="Course Title..." required="1"/>
+                        </h2>
+                    </div>
+                    <group>
+                        <group string="Course Info">
+                            <field name="teacher_id"/>
+                            <field name="credits"/>
+                        </group>
+                        <group string="Assigned Classes">
+                            <field name="classroom_ids" widget="many2many_tags"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Enrolled Students" name="students">
+                            <field name="student_ids" readonly="1">
+                                <list>
+                                    <field name="student_id"/>
+                                    <field name="name"/>
+                                    <field name="classroom_id"/>
+                                    <field name="state" widget="badge"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Syllabus &amp; Outline" name="syllabus">
+                            <field name="description" placeholder="Course syllabus, learning objectives, grading scheme..."/>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Course Search View -->
+    <record id="view_school_course_search" model="ir.ui.view">
+        <field name="name">school.course.search</field>
+        <field name="model">school.course</field>
+        <field name="arch" type="xml">
+            <search string="Search Courses">
+                <field name="name"/>
+                <field name="code"/>
+                <field name="teacher_id"/>
+                <group>
+                    <filter string="Teacher In-Charge" name="group_teacher" context="{'group_by': 'teacher_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Course Window Action -->
+    <record id="action_school_course" model="ir.actions.act_window">
+        <field name="name">Courses</field>
+        <field name="res_model">school.course</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_school_course_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Add a new course or subject
+            </p>
+            <p>
+                Define subjects, credit units, teacher assignments, and student enrollment.
+            </p>
+        </field>
+    </record>
+
+</odoo>

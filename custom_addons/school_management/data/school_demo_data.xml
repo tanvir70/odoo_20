@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <!-- Teachers -->
+    <record id="teacher_john" model="school.teacher">
+        <field name="name">Dr. John Doe</field>
+        <field name="teacher_code">TCH-001</field>
+        <field name="gender">male</field>
+        <field name="email">john.doe@example.school</field>
+        <field name="phone">+1 555-0101</field>
+        <field name="qualification">Ph.D. in Mathematics</field>
+        <field name="specialization">Mathematics &amp; Calculus</field>
+    </record>
+
+    <record id="teacher_sarah" model="school.teacher">
+        <field name="name">Prof. Sarah Smith</field>
+        <field name="teacher_code">TCH-002</field>
+        <field name="gender">female</field>
+        <field name="email">sarah.smith@example.school</field>
+        <field name="phone">+1 555-0102</field>
+        <field name="qualification">M.Sc. in Physics</field>
+        <field name="specialization">Physics &amp; Mechanics</field>
+    </record>
+
+    <!-- Classrooms -->
+    <record id="classroom_10a" model="school.classroom">
+        <field name="name">Grade 10 - Section A</field>
+        <field name="code">G10-A</field>
+        <field name="capacity">30</field>
+        <field name="teacher_id" ref="teacher_john"/>
+    </record>
+
+    <record id="classroom_10b" model="school.classroom">
+        <field name="name">Grade 10 - Section B</field>
+        <field name="code">G10-B</field>
+        <field name="capacity">28</field>
+        <field name="teacher_id" ref="teacher_sarah"/>
+    </record>
+
+    <!-- Courses -->
+    <record id="course_math" model="school.course">
+        <field name="name">Mathematics</field>
+        <field name="code">MATH-101</field>
+        <field name="credits">4</field>
+        <field name="teacher_id" ref="teacher_john"/>
+        <field name="classroom_ids" eval="[(4, ref('classroom_10a')), (4, ref('classroom_10b'))]"/>
+    </record>
+
+    <record id="course_physics" model="school.course">
+        <field name="name">General Physics</field>
+        <field name="code">PHYS-101</field>
+        <field name="credits">4</field>
+        <field name="teacher_id" ref="teacher_sarah"/>
+        <field name="classroom_ids" eval="[(4, ref('classroom_10a'))]"/>
+    </record>
+
+    <!-- Students -->
+    <record id="student_alice" model="school.student">
+        <field name="name">Alice Johnson</field>
+        <field name="student_id">STD/0001</field>
+        <field name="gender">female</field>
+        <field name="date_of_birth">2009-04-15</field>
+        <field name="blood_group">O+</field>
+        <field name="email">alice.j@student.school</field>
+        <field name="phone">+1 555-0201</field>
+        <field name="classroom_id" ref="classroom_10a"/>
+        <field name="guardian_name">Robert Johnson</field>
+        <field name="guardian_relation">father</field>
+        <field name="guardian_phone">+1 555-0301</field>
+        <field name="state">enrolled</field>
+        <field name="course_ids" eval="[(4, ref('course_math')), (4, ref('course_physics'))]"/>
+    </record>
+
+    <record id="student_bob" model="school.student">
+        <field name="name">Bob Williams</field>
+        <field name="student_id">STD/0002</field>
+        <field name="gender">male</field>
+        <field name="date_of_birth">2009-08-20</field>
+        <field name="blood_group">A+</field>
+        <field name="email">bob.w@student.school</field>
+        <field name="phone">+1 555-0202</field>
+        <field name="classroom_id" ref="classroom_10a"/>
+        <field name="guardian_name">Mary Williams</field>
+        <field name="guardian_relation">mother</field>
+        <field name="guardian_phone">+1 555-0302</field>
+        <field name="state">enrolled</field>
+        <field name="course_ids" eval="[(4, ref('course_math'))]"/>
+    </record>
+
+    <!-- Attendance Demo Data -->
+    <record id="att_alice_today" model="school.attendance">
+        <field name="student_id" ref="student_alice"/>
+        <field name="classroom_id" ref="classroom_10a"/>
+        <field name="date" eval="time.strftime('%Y-%m-%d')"/>
+        <field name="status">present</field>
+    </record>
+
+    <record id="att_bob_today" model="school.attendance">
+        <field name="student_id" ref="student_bob"/>
+        <field name="classroom_id" ref="classroom_10a"/>
+        <field name="date" eval="time.strftime('%Y-%m-%d')"/>
+        <field name="status">present</field>
+    </record>
+
+    <!-- Examination Demo Data -->
+    <record id="exam_midterm_math" model="school.exam">
+        <field name="name">Midterm Mathematics 2026</field>
+        <field name="course_id" ref="course_math"/>
+        <field name="classroom_id" ref="classroom_10a"/>
+        <field name="teacher_id" ref="teacher_john"/>
+        <field name="date" eval="time.strftime('%Y-%m-%d')"/>
+        <field name="total_marks">100.0</field>
+        <field name="passing_marks">40.0</field>
+        <field name="state">completed</field>
+    </record>
+
+    <record id="result_alice_math" model="school.exam.result">
+        <field name="exam_id" ref="exam_midterm_math"/>
+        <field name="student_id" ref="student_alice"/>
+        <field name="marks_obtained">92.0</field>
+        <field name="notes">Excellent performance!</field>
+    </record>
+
+    <record id="result_bob_math" model="school.exam.result">
+        <field name="exam_id" ref="exam_midterm_math"/>
+        <field name="student_id" ref="student_bob"/>
+        <field name="marks_obtained">78.0</field>
+        <field name="notes">Good effort, keep practicing calculus.</field>
+    </record>
+
+    <!-- Fee Demo Data -->
+    <record id="fee_alice_tuition" model="school.fee">
+        <field name="student_id" ref="student_alice"/>
+        <field name="fee_type">tuition</field>
+        <field name="amount">500.0</field>
+        <field name="state">paid</field>
+        <field name="payment_method">bank</field>
+        <field name="reference">TXN-2026-9081</field>
+    </record>
+
+    <record id="fee_bob_tuition" model="school.fee">
+        <field name="student_id" ref="student_bob"/>
+        <field name="fee_type">tuition</field>
+        <field name="amount">500.0</field>
+        <field name="state">pending</field>
+        <field name="payment_method">cash</field>
+    </record>
+</odoo>

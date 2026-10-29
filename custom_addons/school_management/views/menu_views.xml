@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Top Level App Menu -->
+    <menuitem id="menu_school_root"
+              name="School"
+              web_icon="school_management,static/description/icon.png"
+              sequence="10"/>
+
+    <!-- 1. Students Menu -->
+    <menuitem id="menu_school_student"
+              name="Students"
+              parent="menu_school_root"
+              action="action_school_student"
+              sequence="10"/>
+
+    <!-- 2. Teachers Menu -->
+    <menuitem id="menu_school_teacher"
+              name="Teachers"
+              parent="menu_school_root"
+              action="action_school_teacher"
+              sequence="20"/>
+
+    <!-- 3. Academic Structure -->
+    <menuitem id="menu_school_academic"
+              name="Academic"
+              parent="menu_school_root"
+              sequence="30"/>
+
+    <menuitem id="menu_school_classroom"
+              name="Classrooms"
+              parent="menu_school_academic"
+              action="action_school_classroom"
+              sequence="10"/>
+
+    <menuitem id="menu_school_course"
+              name="Courses"
+              parent="menu_school_academic"
+              action="action_school_course"
+              sequence="20"/>
+
+    <!-- 4. Attendance -->
+    <menuitem id="menu_school_attendance"
+              name="Attendance"
+              parent="menu_school_root"
+              action="action_school_attendance"
+              sequence="40"/>
+
+    <!-- 5. Examination & Grading -->
+    <menuitem id="menu_school_exam_root"
+              name="Examinations"
+              parent="menu_school_root"
+              sequence="50"/>
+
+    <menuitem id="menu_school_exam"
+              name="Exams"
+              parent="menu_school_exam_root"
+              action="action_school_exam"
+              sequence="10"/>
+
+    <menuitem id="menu_school_exam_result"
+              name="Gradebook &amp; Results"
+              parent="menu_school_exam_root"
+              action="action_school_exam_result"
+              sequence="20"/>
+
+    <!-- 6. Fees & Billing -->
+    <menuitem id="menu_school_fee"
+              name="Fees &amp; Billing"
+              parent="menu_school_root"
+              action="action_school_fee"
+              sequence="60"/>
+
+</odoo>

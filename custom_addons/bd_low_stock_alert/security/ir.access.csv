@@ -1,0 +1,5 @@
+id,name,model_id,group_id/id,operation,domain
+access_bd_stock_low_alert_user,bd.stock.low.alert user,bd.stock.low.alert,bd_stock_transfer_approval.group_bd_inventory_requester,r,
+access_bd_stock_low_alert_approver,bd.stock.low.alert approver,bd.stock.low.alert,bd_stock_transfer_approval.group_bd_inventory_approver,crud,
+access_bd_stock_low_alert_manager,bd.stock.low.alert manager,bd.stock.low.alert,bd_stock_transfer_approval.group_bd_inventory_manager,crud,
+rule_bd_stock_low_alert_multicompany,Stock Low Alert Multi-Company,bd.stock.low.alert,,crud,"[('company_id', 'in', company_ids)]"

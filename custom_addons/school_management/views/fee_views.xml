@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Fee List View -->
+    <record id="view_school_fee_list" model="ir.ui.view">
+        <field name="name">school.fee.list</field>
+        <field name="model">school.fee</field>
+        <field name="arch" type="xml">
+            <list string="Student Fees" decoration-info="state == 'draft'" decoration-warning="state == 'pending'" decoration-success="state == 'paid'" decoration-danger="state == 'cancelled'">
+                <field name="name"/>
+                <field name="student_id"/>
+                <field name="classroom_id"/>
+                <field name="fee_type"/>
+                <field name="amount"/>
+                <field name="due_date"/>
+                <field name="paid_date"/>
+                <field name="payment_method"/>
+                <field name="state" widget="badge" decoration-info="state == 'draft'" decoration-warning="state == 'pending'" decoration-success="state == 'paid'" decoration-danger="state == 'cancelled'"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Fee Form View -->
+    <record id="view_school_fee_form" model="ir.ui.view">
+        <field name="name">school.fee.form</field>
+        <field name="model">school.fee</field>
+        <field name="arch" type="xml">
+            <form string="Student Fee Record">
+                <header>
+                    <button name="action_confirm" string="Confirm Invoice" type="object" class="btn-primary" invisible="state != 'draft'"/>
+                    <button name="action_pay" string="Register Payment" type="object" class="btn-success" invisible="state != 'pending'"/>
+                    <button name="action_cancel" string="Cancel Invoice" type="object" invisible="state in ('paid', 'cancelled')"/>
+                    <button name="action_reset" string="Reset to Draft" type="object" invisible="state != 'cancelled'"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,pending,paid"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <label for="name" string="Receipt / Invoice Reference"/>
+                        <h1>
+                            <field name="name" readonly="1"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group string="Billing Information">
+                            <field name="student_id" required="1"/>
+                            <field name="classroom_id"/>
+                            <field name="fee_type"/>
+                            <field name="amount" required="1"/>
+                        </group>
+                        <group string="Dates &amp; Payment">
+                            <field name="due_date"/>
+                            <field name="paid_date" readonly="state == 'paid'"/>
+                            <field name="payment_method"/>
+                            <field name="reference" placeholder="Check/Transaction #"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Remarks &amp; Details" name="notes">
+                            <field name="notes" placeholder="Additional billing information, scholarship discounts, or payment terms..."/>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Fee Search View -->
+    <record id="view_school_fee_search" model="ir.ui.view">
+        <field name="name">school.fee.search</field>
+        <field name="model">school.fee</field>
+        <field name="arch" type="xml">
+            <search string="Search Fees">
+                <field name="name"/>
+                <field name="student_id"/>
+                <field name="fee_type"/>
+                <field name="reference"/>
+                <separator/>
+                <filter string="Unpaid / Pending" name="filter_unpaid" domain="[('state', 'in', ('draft', 'pending'))]"/>
+                <filter string="Paid" name="filter_paid" domain="[('state', '=', 'paid')]"/>
+                <filter string="Overdue" name="filter_overdue" domain="[('due_date', '&lt;', context_today()), ('state', '!=', 'paid')]"/>
+                <group>
+                    <filter string="Student" name="group_student" context="{'group_by': 'student_id'}"/>
+                    <filter string="Fee Type" name="group_type" context="{'group_by': 'fee_type'}"/>
+                    <filter string="Classroom" name="group_classroom" context="{'group_by': 'classroom_id'}"/>
+                    <filter string="Status" name="group_state" context="{'group_by': 'state'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Fee Action -->
+    <record id="action_school_fee" model="ir.actions.act_window">
+        <field name="name">Fees &amp; Billing</field>
+        <field name="res_model">school.fee</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_school_fee_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Issue a student fee invoice
+            </p>
+            <p>
+                Track tuition, admissions, transport fees, and payment status.
+            </p>
+        </field>
+    </record>
+
+</odoo>

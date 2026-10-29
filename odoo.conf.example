@@ -1,0 +1,18 @@
+[options]
+admin_passwd = admin
+db_host = localhost
+db_port = 5434
+db_user = odoo
+db_password = odoo
+addons_path = ./odoo/addons, ./custom_addons
+http_port = 9004
+
+[colors]
+pid = never
+loglevel = auto
+session_id = never
+http_request_line = auto
+http_response_body = auto
+perf = auto
+cursor_mode = auto
+sql = auto

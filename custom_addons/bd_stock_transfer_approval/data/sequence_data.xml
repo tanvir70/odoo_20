@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <record id="seq_bd_stock_transfer_request" model="ir.sequence">
+        <field name="name">Stock Transfer Requisition</field>
+        <field name="code">bd.stock.transfer.request</field>
+        <field name="prefix">TR/%(range_year)s/</field>
+        <field name="padding">5</field>
+        <field name="company_id" eval="False"/>
+    </record>
+</odoo>

@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Teacher Kanban View -->
+    <record id="view_school_teacher_kanban" model="ir.ui.view">
+        <field name="name">school.teacher.kanban</field>
+        <field name="model">school.teacher</field>
+        <field name="arch" type="xml">
+            <kanban sample="1">
+                <field name="id"/>
+                <field name="name"/>
+                <field name="teacher_code"/>
+                <field name="specialization"/>
+                <field name="email"/>
+                <field name="phone"/>
+                <field name="student_count"/>
+                <field name="image_128"/>
+                <templates>
+                    <t t-name="card" class="flex-row">
+                        <aside class="o_card_aside_full">
+                            <field name="image_128" widget="image" options="{'zoom': true, 'preview_image': 'image_128'}" class="d-block position-relative"/>
+                        </aside>
+                        <main class="ms-2">
+                            <div>
+                                <span class="badge text-bg-light float-end"><field name="teacher_code"/></span>
+                                <field class="fw-bold fs-5" name="name"/>
+                            </div>
+                            <div class="text-primary small mb-1">
+                                <i class="fa fa-briefcase me-1"/>
+                                <field name="specialization"/>
+                            </div>
+                            <div t-if="record.phone.raw_value" class="text-truncate small">
+                                <i class="fa fa-phone me-1"/>
+                                <field name="phone"/>
+                            </div>
+                            <div t-if="record.email.raw_value" class="text-truncate small">
+                                <i class="fa fa-envelope me-1"/>
+                                <field name="email"/>
+                            </div>
+                            <div class="d-flex justify-content-between align-items-center mt-2 pt-1 border-top">
+                                <span class="badge text-bg-info">
+                                    <i class="fa fa-users me-1"/>
+                                    <t t-out="record.student_count.raw_value"/> Students
+                                </span>
+                            </div>
+                        </main>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <!-- Teacher List View -->
+    <record id="view_school_teacher_list" model="ir.ui.view">
+        <field name="name">school.teacher.list</field>
+        <field name="model">school.teacher</field>
+        <field name="arch" type="xml">
+            <list string="Teachers">
+                <field name="teacher_code"/>
+                <field name="name"/>
+                <field name="gender"/>
+                <field name="qualification"/>
+                <field name="specialization"/>
+                <field name="email"/>
+                <field name="phone"/>
+                <field name="student_count"/>
+                <field name="active" widget="boolean_toggle"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Teacher Form View -->
+    <record id="view_school_teacher_form" model="ir.ui.view">
+        <field name="name">school.teacher.form</field>
+        <field name="model">school.teacher</field>
+        <field name="arch" type="xml">
+            <form string="Teacher">
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_students" type="object" class="oe_stat_button" icon="fa-users">
+                            <field name="student_count" widget="statinfo" string="Students"/>
+                        </button>
+                    </div>
+                    <field name="image_1920" widget="image" class="oe_avatar" options="{'preview_image': 'image_128'}"/>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="teacher_code" placeholder="Teacher Code (e.g. TCH-001)"/>
+                        </h1>
+                        <h2>
+                            <field name="name" placeholder="Teacher Full Name..." required="1"/>
+                        </h2>
+                    </div>
+                    <group>
+                        <group string="Professional Details">
+                            <field name="gender"/>
+                            <field name="qualification"/>
+                            <field name="specialization"/>
+                            <field name="joining_date"/>
+                        </group>
+                        <group string="Contact Info">
+                            <field name="email"/>
+                            <field name="phone"/>
+                            <field name="active"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Managed Classrooms" name="classrooms">
+                            <field name="classroom_ids" readonly="1">
+                                <list>
+                                    <field name="name"/>
+                                    <field name="code"/>
+                                    <field name="capacity"/>
+                                    <field name="student_count"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Courses Taught" name="courses">
+                            <field name="course_ids" readonly="1">
+                                <list>
+                                    <field name="code"/>
+                                    <field name="name"/>
+                                    <field name="credits"/>
+                                    <field name="student_count"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Biography &amp; Notes" name="notes">
+                            <field name="notes" placeholder="Educational background, research interests, notes..."/>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Teacher Search View -->
+    <record id="view_school_teacher_search" model="ir.ui.view">
+        <field name="name">school.teacher.search</field>
+        <field name="model">school.teacher</field>
+        <field name="arch" type="xml">
+            <search string="Search Teachers">
+                <field name="name"/>
+                <field name="teacher_code"/>
+                <field name="specialization"/>
+                <field name="email"/>
+                <separator/>
+                <filter string="Archived" name="inactive" domain="[('active', '=', False)]"/>
+                <group>
+                    <filter string="Specialization" name="group_specialization" context="{'group_by': 'specialization'}"/>
+                    <filter string="Gender" name="group_gender" context="{'group_by': 'gender'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Teacher Window Action -->
+    <record id="action_school_teacher" model="ir.actions.act_window">
+        <field name="name">Teachers</field>
+        <field name="res_model">school.teacher</field>
+        <field name="view_mode">kanban,list,form</field>
+        <field name="search_view_id" ref="view_school_teacher_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Add a new teacher
+            </p>
+            <p>
+                Keep track of school faculty, qualifications, assigned classes, and subjects.
+            </p>
+        </field>
+    </record>
+
+</odoo>

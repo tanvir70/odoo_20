@@ -1,0 +1,29 @@
+# Odoo core repository (track as submodule or ignore)
+odoo/
+
+# Virtual environment
+venv/
+env/
+.venv/
+
+# Python cache & artifacts
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.pytest_cache/
+
+# IDE & Editor settings
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# Local configuration & credentials
+odoo.conf
+*.log
+
+# OS artifacts
+.DS_Store
+Thumbs.db

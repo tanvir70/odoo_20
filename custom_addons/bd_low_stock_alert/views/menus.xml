@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Low Stock Alert Menu under Procurement section (right under Replenishment) -->
+    <menuitem id="menu_bd_stock_low_alert"
+              name="Low Stock Alerts"
+              parent="stock.menu_stock_procurement"
+              action="action_bd_stock_low_alert"
+              sequence="5"/>
+</odoo>

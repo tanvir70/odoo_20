@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Exam Result List View (for direct results report) -->
+    <record id="view_school_exam_result_list" model="ir.ui.view">
+        <field name="name">school.exam.result.list</field>
+        <field name="model">school.exam.result</field>
+        <field name="arch" type="xml">
+            <list string="Exam Results" decoration-success="result_status == 'pass'" decoration-danger="result_status == 'fail'">
+                <field name="exam_id"/>
+                <field name="student_id"/>
+                <field name="course_id"/>
+                <field name="classroom_id"/>
+                <field name="marks_obtained"/>
+                <field name="total_marks"/>
+                <field name="percentage"/>
+                <field name="grade" widget="badge"/>
+                <field name="result_status" widget="badge" decoration-success="result_status == 'pass'" decoration-danger="result_status == 'fail'"/>
+                <field name="notes"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Exam Result Search View -->
+    <record id="view_school_exam_result_search" model="ir.ui.view">
+        <field name="name">school.exam.result.search</field>
+        <field name="model">school.exam.result</field>
+        <field name="arch" type="xml">
+            <search string="Search Results">
+                <field name="student_id"/>
+                <field name="exam_id"/>
+                <field name="course_id"/>
+                <field name="classroom_id"/>
+                <separator/>
+                <filter string="Passed" name="filter_pass" domain="[('result_status', '=', 'pass')]"/>
+                <filter string="Failed" name="filter_fail" domain="[('result_status', '=', 'fail')]"/>
+                <group>
+                    <filter string="Student" name="group_student" context="{'group_by': 'student_id'}"/>
+                    <filter string="Exam" name="group_exam" context="{'group_by': 'exam_id'}"/>
+                    <filter string="Subject" name="group_course" context="{'group_by': 'course_id'}"/>
+                    <filter string="Grade" name="group_grade" context="{'group_by': 'grade'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_school_exam_result" model="ir.actions.act_window">
+        <field name="name">Gradebook &amp; Results</field>
+        <field name="res_model">school.exam.result</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_school_exam_result_search"/>
+    </record>
+
+    <!-- Exam List View -->
+    <record id="view_school_exam_list" model="ir.ui.view">
+        <field name="name">school.exam.list</field>
+        <field name="model">school.exam</field>
+        <field name="arch" type="xml">
+            <list string="Examinations" decoration-info="state == 'draft'" decoration-warning="state == 'ongoing'" decoration-success="state == 'completed'">
+                <field name="name"/>
+                <field name="course_id"/>
+                <field name="classroom_id"/>
+                <field name="teacher_id"/>
+                <field name="date"/>
+                <field name="total_marks"/>
+                <field name="passing_marks"/>
+                <field name="student_count"/>
+                <field name="pass_percentage" widget="progressbar"/>
+                <field name="state" widget="badge" decoration-info="state == 'draft'" decoration-warning="state == 'ongoing'" decoration-success="state == 'completed'"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Exam Form View -->
+    <record id="view_school_exam_form" model="ir.ui.view">
+        <field name="name">school.exam.form</field>
+        <field name="model">school.exam</field>
+        <field name="arch" type="xml">
+            <form string="Examination">
+                <header>
+                    <button name="action_generate_results" string="Populate Student Roster" type="object" class="btn-primary" invisible="state == 'completed'" help="Auto-populate grade entries for all students in the selected class"/>
+                    <button name="action_start" string="Start Exam" type="object" class="btn-secondary" invisible="state != 'draft'"/>
+                    <button name="action_complete" string="Finalize &amp; Close" type="object" class="btn-success" invisible="state != 'ongoing'"/>
+                    <button name="action_reset" string="Reset to Draft" type="object" invisible="state == 'draft'"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,ongoing,completed"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <label for="name" string="Exam Title"/>
+                        <h1>
+                            <field name="name" placeholder="e.g. Term 1 Final Examination"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group string="Exam Schedule">
+                            <field name="course_id"/>
+                            <field name="classroom_id"/>
+                            <field name="teacher_id"/>
+                            <field name="date"/>
+                        </group>
+                        <group string="Marks &amp; Performance">
+                            <field name="total_marks"/>
+                            <field name="passing_marks"/>
+                            <field name="student_count"/>
+                            <field name="pass_count"/>
+                            <field name="pass_percentage" widget="progressbar"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Student Results &amp; Marks" name="results">
+                            <field name="result_ids">
+                                <list editable="bottom">
+                                    <field name="student_id"/>
+                                    <field name="marks_obtained"/>
+                                    <field name="total_marks"/>
+                                    <field name="percentage"/>
+                                    <field name="grade" widget="badge"/>
+                                    <field name="result_status" widget="badge" decoration-success="result_status == 'pass'" decoration-danger="result_status == 'fail'"/>
+                                    <field name="notes" placeholder="Notes..."/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Instructions / Notes" name="notes">
+                            <field name="notes" placeholder="Examination instructions, syllabus topics covered, room rules..."/>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Exam Search View -->
+    <record id="view_school_exam_search" model="ir.ui.view">
+        <field name="name">school.exam.search</field>
+        <field name="model">school.exam</field>
+        <field name="arch" type="xml">
+            <search string="Search Exams">
+                <field name="name"/>
+                <field name="course_id"/>
+                <field name="classroom_id"/>
+                <field name="teacher_id"/>
+                <separator/>
+                <filter string="Draft" name="filter_draft" domain="[('state', '=', 'draft')]"/>
+                <filter string="In Progress" name="filter_ongoing" domain="[('state', '=', 'ongoing')]"/>
+                <filter string="Completed" name="filter_completed" domain="[('state', '=', 'completed')]"/>
+                <group>
+                    <filter string="Subject" name="group_course" context="{'group_by': 'course_id'}"/>
+                    <filter string="Classroom" name="group_classroom" context="{'group_by': 'classroom_id'}"/>
+                    <filter string="Status" name="group_state" context="{'group_by': 'state'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Exam Action -->
+    <record id="action_school_exam" model="ir.actions.act_window">
+        <field name="name">Examinations</field>
+        <field name="res_model">school.exam</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_school_exam_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first examination
+            </p>
+            <p>
+                Schedule assessments, populate class rosters, and record marks and grades.
+            </p>
+        </field>
+    </record>
+
+</odoo>

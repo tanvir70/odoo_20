@@ -1,0 +1,17 @@
+id,name,model_id,group_id/id,operation,domain
+access_school_student_user,school.student user,school.student,base.group_user,crud,
+access_school_teacher_user,school.teacher user,school.teacher,base.group_user,crud,
+access_school_classroom_user,school.classroom user,school.classroom,base.group_user,crud,
+access_school_course_user,school.course user,school.course,base.group_user,crud,
+access_school_attendance_user,school.attendance user,school.attendance,base.group_user,crud,
+access_school_exam_user,school.exam user,school.exam,base.group_user,crud,
+access_school_exam_result_user,school.exam.result user,school.exam.result,base.group_user,crud,
+access_school_fee_user,school.fee user,school.fee,base.group_user,crud,
+rule_school_student_company,Student Multi-Company Rule,school.student,,crud,"['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]"
+rule_school_teacher_company,Teacher Multi-Company Rule,school.teacher,,crud,"['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]"
+rule_school_classroom_company,Classroom Multi-Company Rule,school.classroom,,crud,"['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]"
+rule_school_course_company,Course Multi-Company Rule,school.course,,crud,"['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]"
+rule_school_attendance_company,Attendance Multi-Company Rule,school.attendance,,crud,"['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]"
+rule_school_exam_company,Exam Multi-Company Rule,school.exam,,crud,"['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]"
+rule_school_exam_result_company,Exam Result Multi-Company Rule,school.exam.result,,crud,"['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]"
+rule_school_fee_company,Fee Multi-Company Rule,school.fee,,crud,"['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]"

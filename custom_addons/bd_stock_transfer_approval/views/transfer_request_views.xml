@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Transfer Request List View -->
+    <record id="view_bd_stock_transfer_request_list" model="ir.ui.view">
+        <field name="name">bd.stock.transfer.request.list</field>
+        <field name="model">bd.stock.transfer.request</field>
+        <field name="arch" type="xml">
+            <list string="Stock Transfer Requests" decoration-info="state == 'draft'" decoration-warning="state == 'submitted'" decoration-success="state in ('approved', 'done')" decoration-danger="state == 'rejected'">
+                <field name="name"/>
+                <field name="requested_date"/>
+                <field name="required_date"/>
+                <field name="source_warehouse_id"/>
+                <field name="destination_warehouse_id"/>
+                <field name="requester_id"/>
+                <field name="total_qty"/>
+                <field name="company_id" groups="base.group_multi_company" optional="show"/>
+                <field name="priority" widget="priority"/>
+                <field name="state" widget="badge" decoration-info="state == 'draft'" decoration-warning="state == 'submitted'" decoration-success="state in ('approved', 'done')" decoration-danger="state == 'rejected'"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Transfer Request Form View -->
+    <record id="view_bd_stock_transfer_request_form" model="ir.ui.view">
+        <field name="name">bd.stock.transfer.request.form</field>
+        <field name="model">bd.stock.transfer.request</field>
+        <field name="arch" type="xml">
+            <form string="Stock Transfer Request">
+                <header>
+                    <button name="action_submit" string="Submit for Approval" type="object" class="btn-primary" invisible="state != 'draft'"/>
+                    <button name="action_approve" string="Approve Requisition" type="object" class="btn-success" invisible="state != 'submitted'" groups="bd_stock_transfer_approval.group_bd_inventory_approver,bd_stock_transfer_approval.group_bd_inventory_manager"/>
+                    <button name="action_reject" string="Reject" type="object" class="btn-danger" invisible="state != 'submitted'" groups="bd_stock_transfer_approval.group_bd_inventory_approver,bd_stock_transfer_approval.group_bd_inventory_manager"/>
+                    <button name="action_reset_draft" string="Reset to Draft" type="object" invisible="state not in ('rejected', 'cancel')"/>
+                    <button name="action_cancel" string="Cancel" type="object" invisible="state in ('done', 'cancel')"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,submitted,approved,done"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_picking" type="object" class="oe_stat_button" icon="fa-truck" invisible="picking_count == 0">
+                            <field name="picking_count" widget="statinfo" string="Internal Transfers"/>
+                        </button>
+                    </div>
+
+                    <div class="alert alert-danger" role="alert" invisible="state != 'rejected'">
+                        <strong>Rejection Reason: </strong><field name="rejection_reason" readonly="1"/>
+                    </div>
+
+                    <div class="oe_title">
+                        <span class="o_form_label">Stock Transfer Requisition</span>
+                        <h1>
+                            <field name="name"/>
+                        </h1>
+                    </div>
+
+                    <group>
+                        <group string="Transfer Routing">
+                            <field name="source_warehouse_id" readonly="state != 'draft'"/>
+                            <field name="source_location_id" readonly="state != 'draft'"/>
+                            <field name="destination_warehouse_id" readonly="state != 'draft'"/>
+                            <field name="destination_location_id" readonly="state != 'draft'"/>
+                        </group>
+                        <group string="Requisition Details">
+                            <field name="requester_id" readonly="state != 'draft'"/>
+                            <field name="requested_date" readonly="state != 'draft'"/>
+                            <field name="required_date" readonly="state != 'draft'"/>
+                            <field name="priority" widget="priority" readonly="state != 'draft'"/>
+                            <field name="company_id" groups="base.group_multi_company" readonly="state != 'draft'"/>
+                        </group>
+                    </group>
+
+                    <notebook>
+                        <page string="Requested Products" name="products">
+                            <field name="line_ids" readonly="state in ('approved', 'done', 'cancel')">
+                                <list editable="bottom">
+                                    <field name="product_id"/>
+                                    <field name="uom_id"/>
+                                    <field name="source_available_qty"/>
+                                    <field name="requested_qty"/>
+                                    <field name="notes" placeholder="e.g. Priority packing, Fragile..."/>
+                                </list>
+                            </field>
+                            <group class="oe_subtotal_footer">
+                                <field name="total_qty" readonly="1"/>
+                            </group>
+                        </page>
+                        <page string="Purpose &amp; Audit Trail" name="audit">
+                            <group>
+                                <group string="Justification">
+                                    <field name="transfer_reason" readonly="state in ('approved', 'done', 'cancel')"/>
+                                </group>
+                                <group string="Approval Audit Log">
+                                    <field name="approver_id"/>
+                                    <field name="approval_date"/>
+                                </group>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <!-- Transfer Request Search View -->
+    <record id="view_bd_stock_transfer_request_search" model="ir.ui.view">
+        <field name="name">bd.stock.transfer.request.search</field>
+        <field name="model">bd.stock.transfer.request</field>
+        <field name="arch" type="xml">
+            <search string="Search Transfer Requests">
+                <field name="name"/>
+                <field name="requester_id"/>
+                <field name="source_warehouse_id"/>
+                <field name="destination_warehouse_id"/>
+                <field name="line_ids" string="Product" filter_domain="[('line_ids.product_id', 'ilike', self)]"/>
+                <separator/>
+                <filter name="draft" string="Draft" domain="[('state', '=', 'draft')]"/>
+                <filter name="pending_approval" string="Pending Approval" domain="[('state', '=', 'submitted')]"/>
+                <filter name="approved" string="Approved" domain="[('state', '=', 'approved')]"/>
+                <filter name="done" string="Transferred / Done" domain="[('state', '=', 'done')]"/>
+                <group>
+                    <filter string="Status" name="group_by_state" context="{'group_by': 'state'}"/>
+                    <filter string="Source Warehouse" name="group_by_source" context="{'group_by': 'source_warehouse_id'}"/>
+                    <filter string="Destination Warehouse" name="group_by_dest" context="{'group_by': 'destination_warehouse_id'}"/>
+                    <filter string="Requester" name="group_by_requester" context="{'group_by': 'requester_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Action for Transfer Requests -->
+    <record id="action_bd_stock_transfer_request" model="ir.actions.act_window">
+        <field name="name">Transfer Requests</field>
+        <field name="res_model">bd.stock.transfer.request</field>
+        <field name="view_mode">list,form</field>
+        <field name="context">{}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create a new internal stock transfer requisition!
+            </p>
+            <p>
+                Branch users can submit transfer requests to central or regional warehouses. Approvers can review availability and authorize the transfer.
+            </p>
+        </field>
+    </record>
+
+    <!-- Action for Pending Approvals -->
+    <record id="action_bd_stock_transfer_pending_approval" model="ir.actions.act_window">
+        <field name="name">Pending Approvals</field>
+        <field name="res_model">bd.stock.transfer.request</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('state', '=', 'submitted')]</field>
+        <field name="context">{'search_default_pending_approval': 1}</field>
+    </record>
+
+</odoo>

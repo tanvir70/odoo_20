@@ -12,7 +12,7 @@
                      role="alert" invisible="not mushak_number">
                     <div>
                         <i class="oi oi-info me-2"/>
-                        <strong>Bangladesh Statutory Mushak <field name="mushak_form" readonly="1" class="d-inline"/></strong>:
+                        <strong>Bangladesh Statutory: <field name="mushak_form" readonly="1" class="d-inline"/></strong>
                         <span class="badge text-bg-primary fs-6 ms-2"><field name="mushak_number" readonly="1"/></span>
                         <span class="ms-3 text-muted">Issued: <field name="mushak_issue_datetime" readonly="1"/></span>
                     </div>

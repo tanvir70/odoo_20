@@ -10,6 +10,7 @@
         'account',
         'account_debit_note',
         'l10n_bd',
+        'mail',
     ],
     'data': [
         'security/mushak_security.xml',

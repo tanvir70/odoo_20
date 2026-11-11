@@ -4,7 +4,7 @@ from odoo.exceptions import ValidationError
 
 
 class AccountMoveLine(models.Model):
-    _inherit = 'account.move_line'
+    _inherit = 'account.move.line'
 
     mushak_value_excl_tax = fields.Monetary(
         string='Value Excl. Duties & VAT',

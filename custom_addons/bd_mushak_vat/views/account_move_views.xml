@@ -8,20 +8,33 @@
             <xpath expr="//sheet" position="before">
                 <field name="mushak_number" invisible="1"/>
                 <field name="mushak_form" invisible="1"/>
-                <div class="alert alert-info d-flex align-items-center justify-content-between mb-2"
+                <div class="alert alert-info d-flex align-items-center justify-content-between p-2 mb-2"
                      role="alert" invisible="not mushak_number">
-                    <div>
-                        <i class="oi oi-info me-2"/>
-                        <strong>Bangladesh Statutory: <field name="mushak_form" readonly="1" class="d-inline"/></strong>
-                        <span class="badge text-bg-primary fs-6 ms-2"><field name="mushak_number" readonly="1"/></span>
-                        <span class="ms-3 text-muted">Issued: <field name="mushak_issue_datetime" readonly="1"/></span>
+                    <div class="d-flex align-items-center">
+                        <field name="mushak_qr_code" widget="image" readonly="1"
+                               class="bg-white border rounded p-1 me-3"
+                               style="width: 60px; height: 60px; min-width: 60px;"/>
+                        <div>
+                            <div>
+                                <i class="oi oi-info me-1"/>
+                                <strong>Bangladesh Statutory: <field name="mushak_form" readonly="1" class="d-inline"/></strong>
+                                <span class="badge text-bg-primary fs-6 ms-2"><field name="mushak_number" readonly="1"/></span>
+                            </div>
+                            <div class="small text-muted mt-1">
+                                <span>Issued: <field name="mushak_issue_datetime" readonly="1"/></span>
+                                <span class="mx-2">•</span>
+                                <field name="mushak_verification_url" widget="url" readonly="1" text="Verify Public Portal ↗"/>
+                            </div>
+                        </div>
                     </div>
-                    <button name="action_regenerate_mushak_token"
-                            type="object"
-                            string="Regenerate QR Token"
-                            class="btn btn-sm btn-outline-secondary"
-                            groups="bd_mushak_vat.group_mushak_manager"
-                            help="Regenerates public verification token if compromised."/>
+                    <div>
+                        <button name="action_regenerate_mushak_token"
+                                type="object"
+                                string="Regenerate Token"
+                                class="btn btn-sm btn-outline-secondary"
+                                groups="bd_mushak_vat.group_mushak_manager"
+                                help="Regenerates public verification token if compromised."/>
+                    </div>
                 </div>
             </xpath>
 

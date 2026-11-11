@@ -188,14 +188,14 @@
     <!-- Configuration Menu Items -->
     <menuitem id="menu_mushak_vds_rules"
               name="VDS Withholding Rules"
-              parent="account.account_management_menu"
+              parent="account.account_account_menu"
               action="action_mushak_vds_rule"
               sequence="35"
               groups="bd_mushak_vat.group_mushak_manager"/>
 
     <menuitem id="menu_mushak_vds_certificates"
               name="Mushak 6.6 Certificates"
-              parent="menu_mushak_root"
+              parent="bd_mushak_vat.menu_mushak_root"
               action="action_mushak_vds_certificate"
               sequence="25"/>
 </odoo>

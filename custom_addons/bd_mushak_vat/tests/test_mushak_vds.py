@@ -9,9 +9,10 @@ class TestMushakVds(TransactionCase):
     def setUpClass(cls):
         super().setUpClass()
         cls.company_bd = cls.env.company
-        cls.company_bd.write({
+        cls.company_bd.partner_id.write({
             'mushak_bin': '1234567890123',
             'mushak_is_vds_entity': True,
+            'mushak_vds_entity_type': 'limited_company',
         })
         cls.bank_partner = cls.env['res.partner'].create({
             'name': 'Sonali Bank PLC',

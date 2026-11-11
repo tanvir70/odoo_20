@@ -38,7 +38,7 @@
                 <field name="product_name" string="Product"/>
                 <filter string="Input VAT Claimable" name="claimable" domain="[('is_input_vat_claimable', '=', True)]"/>
                 <filter string="Missing Challan No" name="missing_challan" domain="['|', ('supplier_challan_number', '=', False), ('supplier_challan_number', '=', '')]"/>
-                <group expand="0" string="Group By">
+                <group>
                     <filter string="Date" name="group_date" context="{'group_by': 'invoice_date:month'}"/>
                     <filter string="Supplier" name="group_supplier" context="{'group_by': 'partner_id'}"/>
                 </group>
@@ -99,7 +99,7 @@
                 <field name="product_name" string="Product"/>
                 <filter string="Posted Challans" name="filter_posted" domain="[('state', '=', 'posted')]"/>
                 <filter string="Cancelled Challans" name="filter_cancelled" domain="[('state', '=', 'cancel')]"/>
-                <group expand="0" string="Group By">
+                <group>
                     <filter string="Date" name="group_date" context="{'group_by': 'invoice_date:month'}"/>
                     <filter string="Form Type" name="group_form" context="{'group_by': 'mushak_form'}"/>
                     <filter string="Buyer" name="group_buyer" context="{'group_by': 'partner_id'}"/>

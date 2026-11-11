@@ -15,6 +15,11 @@ class ResConfigSettings(models.TransientModel):
         readonly=False,
         string='We are a Withholding Entity',
     )
+    mushak_vds_entity_type = fields.Selection(
+        related='company_id.mushak_vds_entity_type',
+        readonly=False,
+        string='Withholding Entity Type',
+    )
     mushak_vat_circle = fields.Char(
         related='company_id.mushak_vat_circle',
         readonly=False,

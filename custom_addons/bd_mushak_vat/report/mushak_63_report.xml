@@ -6,7 +6,6 @@
         <field name="model">account.move</field>
         <field name="report_type">qweb-pdf</field>
         <field name="report_name">bd_mushak_vat.report_mushak_63_document</field>
-        <field name="report_file">bd_mushak_vat.report_mushak_63_document</field>
         <field name="print_report_name">'Mushak-6.3-%s' % (object.mushak_number or object.name)</field>
         <field name="binding_model_id" ref="account.model_account_move"/>
         <field name="binding_type">report</field>
@@ -40,34 +39,34 @@
                     <table class="mushak_box_table">
                         <tr>
                             <td style="width: 50%;">
-                                <strong>নিবন্ধিত ব্যক্তির নাম (Supplier Name):</strong> <span t-esc="o.company_id.name"/><br/>
-                                <strong>নিবন্ধিত ব্যক্তির বিআইএন (Supplier BIN):</strong> <span t-esc="o.company_id.mushak_bin or 'N/A'"/><br/>
+                                <strong>নিবন্ধিত ব্যক্তির নাম (Supplier Name):</strong> <span t-out="o.company_id.name"/><br/>
+                                <strong>নিবন্ধিত ব্যক্তির বিআইএন (Supplier BIN):</strong> <span t-out="o.company_id.mushak_bin or 'N/A'"/><br/>
                                 <strong>চালানপত্র জারির ঠিকানা (Address):</strong>
-                                <span t-esc="o.company_id.partner_id._display_address()"/>
+                                <span t-out="o.company_id.partner_id._display_address()"/>
                             </td>
                             <td style="width: 50%;">
                                 <strong>চালানপত্র নম্বর (Challan No):</strong>
-                                <strong style="font-size: 13px;"><span t-esc="o.mushak_number or 'UNASSIGNED (DRAFT)'"/></strong><br/>
+                                <strong style="font-size: 13px;"><span t-out="o.mushak_number or 'UNASSIGNED (DRAFT)'"/></strong><br/>
                                 <strong>ইস্যুর তারিখ (Issue Date):</strong>
-                                <span t-esc="o.invoice_date or ''"/><br/>
+                                <span t-out="o.invoice_date or ''"/><br/>
                                 <strong>ইস্যুর সময় (Issue Time):</strong>
-                                <span t-esc="o.mushak_issue_datetime or ''"/><br/>
+                                <span t-out="o.mushak_issue_datetime or ''"/><br/>
                                 <strong>অর্থবছর (Fiscal Year):</strong>
-                                <span t-esc="o.mushak_fiscal_year_label or ''"/>
+                                <span t-out="o.mushak_fiscal_year_label or ''"/>
                             </td>
                         </tr>
                         <tr>
                             <td style="width: 50%; border-top: 1px dotted #ccc; padding-top: 4px;">
-                                <strong>ক্রেতার নাম (Buyer Name):</strong> <span t-esc="o.partner_id.name"/><br/>
-                                <strong>ক্রেতার বিআইএন (Buyer BIN):</strong> <span t-esc="o.partner_id.mushak_bin or 'অনিবন্ধিত / N/A'"/><br/>
+                                <strong>ক্রেতার নাম (Buyer Name):</strong> <span t-out="o.partner_id.name"/><br/>
+                                <strong>ক্রেতার বিআইএন (Buyer BIN):</strong> <span t-out="o.partner_id.mushak_bin or 'অনিবন্ধিত / N/A'"/><br/>
                                 <strong>ক্রেতার ঠিকানা (Buyer Address):</strong>
-                                <span t-esc="o.partner_id._display_address()"/>
+                                <span t-out="o.partner_id._display_address()"/>
                             </td>
                             <td style="width: 50%; border-top: 1px dotted #ccc; padding-top: 4px;">
                                 <strong>গন্তব্যস্থল (Final Destination):</strong>
-                                <span t-esc="o.mushak_delivery_address or o.partner_id._display_address()"/><br/>
+                                <span t-out="o.mushak_delivery_address or o.partner_id._display_address()"/><br/>
                                 <strong>যানবাহনের প্রকৃতি ও নম্বর (Vehicle Info):</strong>
-                                <span t-esc="o.mushak_vehicle_type or ''"/> <span t-if="o.mushak_vehicle_number" t-esc="'(' + o.mushak_vehicle_number + ')'"/>
+                                <span t-out="o.mushak_vehicle_type or ''"/> <span t-if="o.mushak_vehicle_number" t-out="'(' + o.mushak_vehicle_number + ')'"/>
                             </td>
                         </tr>
                     </table>
@@ -98,22 +97,22 @@
 
                             <t t-foreach="o.invoice_line_ids.filtered(lambda l: l.display_type in (False, 'product'))" t-as="line">
                                 <tr>
-                                    <td class="text-center"><span t-esc="o.format_mushak_num(sl)"/></td>
+                                    <td class="text-center"><span t-out="o.format_mushak_num(sl)"/></td>
                                     <td>
-                                        <span t-esc="line.name"/>
+                                        <span t-out="line.name"/>
                                         <div t-if="line.product_id.mushak_hs_code" class="text-muted" style="font-size: 8px;">
-                                            HS: <span t-esc="line.product_id.mushak_hs_code"/>
+                                            HS: <span t-out="line.product_id.mushak_hs_code"/>
                                         </div>
                                     </td>
-                                    <td class="text-center"><span t-esc="line.product_uom_id.name or ''"/></td>
-                                    <td class="text-end"><span t-esc="o.format_mushak_num(line.quantity)"/></td>
-                                    <td class="text-end"><span t-esc="o.format_mushak_num(line.price_unit)"/></td>
-                                    <td class="text-end"><span t-esc="o.format_mushak_num(line.mushak_value_excl_tax)"/></td>
-                                    <td class="text-center"><span t-esc="o.format_mushak_num(line.mushak_sd_rate)"/>%</td>
-                                    <td class="text-end"><span t-esc="o.format_mushak_num(line.mushak_sd_amount)"/></td>
-                                    <td class="text-center"><span t-esc="o.format_mushak_num(line.mushak_vat_rate)"/>%</td>
-                                    <td class="text-end"><span t-esc="o.format_mushak_num(line.mushak_vat_amount)"/></td>
-                                    <td class="text-end"><strong><span t-esc="o.format_mushak_num(line.mushak_value_incl_tax)"/></strong></td>
+                                    <td class="text-center"><span t-out="line.product_uom_id.name or ''"/></td>
+                                    <td class="text-end"><span t-out="o.format_mushak_num(line.quantity)"/></td>
+                                    <td class="text-end"><span t-out="o.format_mushak_num(line.price_unit)"/></td>
+                                    <td class="text-end"><span t-out="o.format_mushak_num(line.mushak_value_excl_tax)"/></td>
+                                    <td class="text-center"><span t-out="o.format_mushak_num(line.mushak_sd_rate)"/>%</td>
+                                    <td class="text-end"><span t-out="o.format_mushak_num(line.mushak_sd_amount)"/></td>
+                                    <td class="text-center"><span t-out="o.format_mushak_num(line.mushak_vat_rate)"/>%</td>
+                                    <td class="text-end"><span t-out="o.format_mushak_num(line.mushak_vat_amount)"/></td>
+                                    <td class="text-end"><strong><span t-out="o.format_mushak_num(line.mushak_value_incl_tax)"/></strong></td>
                                 </tr>
                                 <t t-set="sl" t-value="sl + 1"/>
                                 <t t-set="total_val" t-value="total_val + line.mushak_value_excl_tax"/>
@@ -125,22 +124,22 @@
                             <!-- Totals Row -->
                             <tr style="font-weight: bold; background-color: #f9f9f9;">
                                 <td colspan="5" class="text-end">সর্বমোট (Total):</td>
-                                <td class="text-end"><span t-esc="o.format_mushak_num(total_val)"/></td>
+                                <td class="text-end"><span t-out="o.format_mushak_num(total_val)"/></td>
                                 <td></td>
-                                <td class="text-end"><span t-esc="o.format_mushak_num(total_sd)"/></td>
+                                <td class="text-end"><span t-out="o.format_mushak_num(total_sd)"/></td>
                                 <td></td>
-                                <td class="text-end"><span t-esc="o.format_mushak_num(total_vat)"/></td>
-                                <td class="text-end"><span t-esc="o.format_mushak_num(total_grand)"/></td>
+                                <td class="text-end"><span t-out="o.format_mushak_num(total_vat)"/></td>
+                                <td class="text-end"><span t-out="o.format_mushak_num(total_grand)"/></td>
                             </tr>
                         </tbody>
                     </table>
 
                     <!-- Amount in Words -->
                     <div style="margin-top: 6px; padding: 4px; background-color: #fafafa; border: 1px solid #ddd;">
-                        <div><strong>কথায় (বাংলা):</strong> <span t-esc="o.get_mushak_amount_words_bn(total_grand)"/></div>
-                        <div><strong>In Words (English):</strong> <span t-esc="o.get_mushak_amount_words_en(total_grand)"/></div>
+                        <div><strong>কথায় (বাংলা):</strong> <span t-out="o.get_mushak_amount_words_bn(total_grand)"/></div>
+                        <div><strong>In Words (English):</strong> <span t-out="o.get_mushak_amount_words_en(total_grand)"/></div>
                         <div t-if="o.currency_id != o.company_id.currency_id" class="text-muted" style="font-size: 9px; margin-top: 2px;">
-                            * Foreign currency document: Converted at applicable exchange rate to BDT. Invoice Total: <span t-esc="o.currency_id.symbol"/> <span t-esc="o.amount_total"/>.
+                            * Foreign currency document: Converted at applicable exchange rate to BDT. Invoice Total: <span t-out="o.currency_id.symbol"/> <span t-out="o.amount_total"/>.
                         </div>
                     </div>
 
@@ -148,8 +147,8 @@
                     <div class="row mushak_declaration mt-4">
                         <div class="col-7">
                             <div style="font-size: 10px;">
-                                <em>প্রতিষ্ঠান কর্তৃপক্ষের দায়িত্বপ্রাপ্ত ব্যক্তির নাম:</em> <strong><span t-esc="o.mushak_signatory_id.name or o.create_uid.name"/></strong><br/>
-                                <em>পদবি:</em> <span t-esc="o.mushak_signatory_id.partner_id.function or 'Authorized Signatory'"/><br/>
+                                <em>প্রতিষ্ঠান কর্তৃপক্ষের দায়িত্বপ্রাপ্ত ব্যক্তির নাম:</em> <strong><span t-out="o.mushak_signatory_id.name or o.create_uid.name"/></strong><br/>
+                                <em>পদবি:</em> <span t-out="o.mushak_signatory_id.partner_id.function or 'Authorized Signatory'"/><br/>
                                 <em>স্বাক্ষর:</em> ___________________________<br/>
                                 <em>সীল:</em>
                             </div>
@@ -163,7 +162,7 @@
                                      style="width: 80px; height: 80px; border: 1px solid #ccc; padding: 2px;"/>
                                 <div style="font-size: 8px; color: #555; margin-top: 2px;">
                                     Verify Authenticity<br/>
-                                    <span t-esc="o.mushak_number"/>
+                                    <span t-out="o.mushak_number"/>
                                 </div>
                             </div>
                         </div>

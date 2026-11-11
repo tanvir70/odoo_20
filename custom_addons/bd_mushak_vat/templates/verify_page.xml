@@ -65,21 +65,21 @@
 
                             <div class="verify-body">
                                 <div class="alert alert-light border text-center mb-4">
-                                    <span class="badge bg-primary fs-6 mb-1"><t t-esc="data.get('document_type')"/></span>
-                                    <h3 class="mb-0 mt-1 fw-bold text-dark"><t t-esc="data.get('document_number')"/></h3>
-                                    <div class="text-muted small mt-1">Issued: <t t-esc="data.get('issue_datetime')"/></div>
+                                    <span class="badge bg-primary fs-6 mb-1"><t t-out="data.get('document_type')"/></span>
+                                    <h3 class="mb-0 mt-1 fw-bold text-dark"><t t-out="data.get('document_number')"/></h3>
+                                    <div class="text-muted small mt-1">Issued: <t t-out="data.get('issue_datetime')"/></div>
                                 </div>
 
                                 <div class="row g-3 mb-4">
                                     <div class="col-sm-6">
                                         <div class="field-label">Supplier / Issuer</div>
-                                        <div class="field-val"><t t-esc="data.get('supplier_name')"/></div>
-                                        <div class="small text-muted">BIN: <t t-esc="data.get('supplier_bin')"/></div>
+                                        <div class="field-val"><t t-out="data.get('supplier_name')"/></div>
+                                        <div class="small text-muted">BIN: <t t-out="data.get('supplier_bin')"/></div>
                                     </div>
                                     <div class="col-sm-6">
                                         <div class="field-label">Buyer / Recipient</div>
-                                        <div class="field-val"><t t-esc="data.get('buyer_name_masked')"/></div>
-                                        <div class="small text-muted">BIN: <t t-esc="data.get('buyer_bin')"/></div>
+                                        <div class="field-val"><t t-out="data.get('buyer_name_masked')"/></div>
+                                        <div class="small text-muted">BIN: <t t-out="data.get('buyer_bin')"/></div>
                                     </div>
                                 </div>
 
@@ -87,17 +87,17 @@
 
                                 <div class="row g-2 mb-3">
                                     <div class="col-6 text-muted">Value Excl. Tax:</div>
-                                    <div class="col-6 text-end fw-semibold">Tk <t t-esc="'{:,.2f}'.format(data.get('total_value', 0.0))"/></div>
+                                    <div class="col-6 text-end fw-semibold">Tk <t t-out="'{:,.2f}'.format(data.get('total_value', 0.0))"/></div>
 
                                     <div class="col-6 text-muted">Supplementary Duty:</div>
-                                    <div class="col-6 text-end fw-semibold">Tk <t t-esc="'{:,.2f}'.format(data.get('total_sd', 0.0))"/></div>
+                                    <div class="col-6 text-end fw-semibold">Tk <t t-out="'{:,.2f}'.format(data.get('total_sd', 0.0))"/></div>
 
                                     <div class="col-6 text-muted">Value Added Tax (VAT):</div>
-                                    <div class="col-6 text-end fw-semibold">Tk <t t-esc="'{:,.2f}'.format(data.get('total_vat', 0.0))"/></div>
+                                    <div class="col-6 text-end fw-semibold">Tk <t t-out="'{:,.2f}'.format(data.get('total_vat', 0.0))"/></div>
 
                                     <div class="col-6 fs-5 fw-bold text-dark pt-2 border-top">Grand Total:</div>
                                     <div class="col-6 fs-5 fw-bold text-primary text-end pt-2 border-top">
-                                        Tk <t t-esc="'{:,.2f}'.format(data.get('grand_total', 0.0))"/>
+                                        Tk <t t-out="'{:,.2f}'.format(data.get('grand_total', 0.0))"/>
                                     </div>
                                 </div>
 

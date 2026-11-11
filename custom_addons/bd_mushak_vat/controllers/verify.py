@@ -19,13 +19,19 @@ class MushakVerifyController(http.Controller):
             return clean + '***'
         return clean[:3] + '***'
 
-    def _get_document_data(self, token):
+    def _get_document_data(self, token, env=None):
         """Locate account.move or mushak.vds.certificate and extract only sanitized public fields."""
         if not token or not TOKEN_REGEX.match(token):
             return None
 
+        if env is None:
+            try:
+                env = request.env
+            except Exception:
+                return None
+
         # 1. Search account.move (6.3, 6.7, 6.8)
-        Move = request.env['account.move'].sudo()
+        Move = env['account.move'].sudo()
         move = Move.search([('mushak_access_token', '=', token)], limit=1)
 
         if move:
@@ -65,7 +71,7 @@ class MushakVerifyController(http.Controller):
             }
 
         # 2. Search mushak.vds.certificate (6.6)
-        Cert = request.env['mushak.vds.certificate'].sudo()
+        Cert = env['mushak.vds.certificate'].sudo()
         cert = Cert.search([('mushak_access_token', '=', token)], limit=1)
 
         if cert:

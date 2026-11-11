@@ -9,7 +9,6 @@ class ResPartner(models.Model):
 
     mushak_bin = fields.Char(
         string='BIN',
-        size=13,
         index=True,
         copy=False,
         help='13-digit Business Identification Number (VAT Registration Number).',
@@ -51,22 +50,28 @@ class ResPartner(models.Model):
 
     @api.model
     def _commercial_fields(self):
-        return super()._commercial_fields() + ['mushak_bin', 'mushak_is_vds_entity']
+        return super()._commercial_fields() + ['mushak_bin', 'mushak_is_vds_entity', 'mushak_vds_entity_type']
 
     @api.model
     def _synced_commercial_fields(self):
-        return super()._synced_commercial_fields() + ['mushak_bin', 'mushak_is_vds_entity']
+        return super()._synced_commercial_fields() + ['mushak_bin', 'mushak_is_vds_entity', 'mushak_vds_entity_type']
 
     @api.model_create_multi
     def create(self, vals_list):
         for vals in vals_list:
             if vals.get('mushak_bin'):
-                vals['mushak_bin'] = re.sub(r'\D', '', str(vals['mushak_bin']))
+                clean_bin = re.sub(r'\D', '', str(vals['mushak_bin']))
+                if len(clean_bin) != 13:
+                    raise ValidationError(_("A BIN must have exactly 13 digits. Old 9- or 11-digit numbers from before the e-BIN migration are no longer valid."))
+                vals['mushak_bin'] = clean_bin
         return super().create(vals_list)
 
     def write(self, vals):
         if vals.get('mushak_bin'):
-            vals['mushak_bin'] = re.sub(r'\D', '', str(vals['mushak_bin']))
+            clean_bin = re.sub(r'\D', '', str(vals['mushak_bin']))
+            if len(clean_bin) != 13:
+                raise ValidationError(_("A BIN must have exactly 13 digits. Old 9- or 11-digit numbers from before the e-BIN migration are no longer valid."))
+            vals['mushak_bin'] = clean_bin
         return super().write(vals)
 
     @api.constrains('mushak_bin')

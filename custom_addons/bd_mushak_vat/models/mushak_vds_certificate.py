@@ -132,7 +132,7 @@ class MushakVdsCertificate(models.Model):
         """Issue statutory Mushak 6.6 certificate and assign fiscal year sequence."""
         for cert in self:
             if cert.direction == 'issued' and not cert.name:
-                seq = self.env['account.move']._get_mushak_sequence('mushak.66')
+                seq = self.env['account.move']._get_mushak_sequence('mushak.66', company=cert.company_id)
                 cert.name = seq.next_by_id(sequence_date=cert.date or fields.Date.today())
             if not cert.mushak_access_token:
                 cert.mushak_access_token = secrets.token_urlsafe(32)
@@ -165,7 +165,8 @@ class MushakVdsCertificate(models.Model):
 
     def get_mushak_verification_url(self):
         self.ensure_one()
-        base_url = self.env['ir.config_parameter'].sudo().get_param('web.base.url') or ''
+        ICP = self.env['ir.config_parameter'].sudo()
+        base_url = ICP.get_str('web.base.url', '') if hasattr(ICP, 'get_str') else (ICP.get_param('web.base.url') or '')
         return f"{base_url.rstrip('/')}/mushak/verify/{self.mushak_access_token or ''}"
 
 

@@ -6,7 +6,6 @@
         <field name="model">account.move</field>
         <field name="report_type">qweb-pdf</field>
         <field name="report_name">bd_mushak_vat.report_mushak_67_document</field>
-        <field name="report_file">bd_mushak_vat.report_mushak_67_document</field>
         <field name="print_report_name">'Mushak-6.7-%s' % (object.mushak_number or object.name)</field>
         <field name="binding_model_id" ref="account.model_account_move"/>
         <field name="binding_type">report</field>
@@ -35,24 +34,24 @@
                     <table class="mushak_box_table">
                         <tr>
                             <td style="width: 50%;">
-                                <strong>ইস্যুকারী প্রতিষ্ঠানের নাম:</strong> <span t-esc="o.company_id.name"/><br/>
-                                <strong>বিআইএন (BIN):</strong> <span t-esc="o.company_id.mushak_bin or 'N/A'"/><br/>
-                                <strong>ঠিকানা:</strong> <span t-esc="o.company_id.partner_id._display_address()"/>
+                                <strong>ইস্যুকারী প্রতিষ্ঠানের নাম:</strong> <span t-out="o.company_id.name"/><br/>
+                                <strong>বিআইএন (BIN):</strong> <span t-out="o.company_id.mushak_bin or 'N/A'"/><br/>
+                                <strong>ঠিকানা:</strong> <span t-out="o.company_id.partner_id._display_address()"/>
                             </td>
                             <td style="width: 50%;">
                                 <strong>ক্রেডিট নোট নম্বর:</strong>
-                                <strong style="font-size: 13px;"><span t-esc="o.mushak_number or 'UNASSIGNED (DRAFT)'"/></strong><br/>
-                                <strong>ইস্যুর তারিখ ও সময়:</strong> <span t-esc="o.mushak_issue_datetime or o.invoice_date or ''"/><br/>
+                                <strong style="font-size: 13px;"><span t-out="o.mushak_number or 'UNASSIGNED (DRAFT)'"/></strong><br/>
+                                <strong>ইস্যুর তারিখ ও সময়:</strong> <span t-out="o.mushak_issue_datetime or o.invoice_date or ''"/><br/>
                                 <strong>মূল চালানপত্র নম্বর (Original 6.3 No):</strong>
-                                <strong class="text-primary"><span t-esc="o.mushak_origin_number or 'N/A'"/></strong><br/>
-                                <strong>মূল চালানের তারিখ:</strong> <span t-esc="o.mushak_origin_date or 'N/A'"/>
+                                <strong class="text-primary"><span t-out="o.mushak_origin_number or 'N/A'"/></strong><br/>
+                                <strong>মূল চালানের তারিখ:</strong> <span t-out="o.mushak_origin_date or 'N/A'"/>
                             </td>
                         </tr>
                         <tr>
                             <td colspan="2" style="border-top: 1px dotted #ccc; padding-top: 4px;">
-                                <strong>গ্রহীতার নাম ও বিআইএন:</strong> <span t-esc="o.partner_id.name"/> (BIN: <span t-esc="o.partner_id.mushak_bin or 'N/A'"/>)<br/>
+                                <strong>গ্রহীতার নাম ও বিআইএন:</strong> <span t-out="o.partner_id.name"/> (BIN: <span t-out="o.partner_id.mushak_bin or 'N/A'"/>)<br/>
                                 <strong>হ্রাসকারী সমন্বয়ের কারণ (Reason):</strong>
-                                <em><span t-esc="o.mushak_adjustment_reason or 'None stated'"/></em>
+                                <em><span t-out="o.mushak_adjustment_reason or 'None stated'"/></em>
                             </td>
                         </tr>
                     </table>
@@ -80,14 +79,14 @@
 
                             <t t-foreach="o.invoice_line_ids.filtered(lambda l: l.display_type in (False, 'product'))" t-as="line">
                                 <tr>
-                                    <td class="text-center"><span t-esc="o.format_mushak_num(sl)"/></td>
-                                    <td><span t-esc="line.name"/></td>
-                                    <td class="text-end"><span t-esc="o.format_mushak_num(abs(line.quantity))"/></td>
-                                    <td class="text-end"><span t-esc="o.format_mushak_num(line.price_unit)"/></td>
-                                    <td class="text-end"><span t-esc="o.format_mushak_num(abs(line.mushak_value_excl_tax))"/></td>
-                                    <td class="text-end"><span t-esc="o.format_mushak_num(abs(line.mushak_sd_amount))"/></td>
-                                    <td class="text-end"><span t-esc="o.format_mushak_num(abs(line.mushak_vat_amount))"/></td>
-                                    <td class="text-end"><strong><span t-esc="o.format_mushak_num(abs(line.mushak_value_incl_tax))"/></strong></td>
+                                    <td class="text-center"><span t-out="o.format_mushak_num(sl)"/></td>
+                                    <td><span t-out="line.name"/></td>
+                                    <td class="text-end"><span t-out="o.format_mushak_num(abs(line.quantity))"/></td>
+                                    <td class="text-end"><span t-out="o.format_mushak_num(line.price_unit)"/></td>
+                                    <td class="text-end"><span t-out="o.format_mushak_num(abs(line.mushak_value_excl_tax))"/></td>
+                                    <td class="text-end"><span t-out="o.format_mushak_num(abs(line.mushak_sd_amount))"/></td>
+                                    <td class="text-end"><span t-out="o.format_mushak_num(abs(line.mushak_vat_amount))"/></td>
+                                    <td class="text-end"><strong><span t-out="o.format_mushak_num(abs(line.mushak_value_incl_tax))"/></strong></td>
                                 </tr>
                                 <t t-set="sl" t-value="sl + 1"/>
                                 <t t-set="total_val" t-value="total_val + abs(line.mushak_value_excl_tax)"/>
@@ -98,17 +97,17 @@
 
                             <tr style="font-weight: bold; background-color: #f9f9f9;">
                                 <td colspan="4" class="text-end">মোট সমন্বয় (Total Adjustment):</td>
-                                <td class="text-end"><span t-esc="o.format_mushak_num(total_val)"/></td>
-                                <td class="text-end"><span t-esc="o.format_mushak_num(total_sd)"/></td>
-                                <td class="text-end"><span t-esc="o.format_mushak_num(total_vat)"/></td>
-                                <td class="text-end"><span t-esc="o.format_mushak_num(total_grand)"/></td>
+                                <td class="text-end"><span t-out="o.format_mushak_num(total_val)"/></td>
+                                <td class="text-end"><span t-out="o.format_mushak_num(total_sd)"/></td>
+                                <td class="text-end"><span t-out="o.format_mushak_num(total_vat)"/></td>
+                                <td class="text-end"><span t-out="o.format_mushak_num(total_grand)"/></td>
                             </tr>
                         </tbody>
                     </table>
 
                     <div style="margin-top: 6px; padding: 4px; background-color: #fafafa; border: 1px solid #ddd;">
-                        <div><strong>কথায় (বাংলা):</strong> <span t-esc="o.get_mushak_amount_words_bn(total_grand)"/></div>
-                        <div><strong>In Words (English):</strong> <span t-esc="o.get_mushak_amount_words_en(total_grand)"/></div>
+                        <div><strong>কথায় (বাংলা):</strong> <span t-out="o.get_mushak_amount_words_bn(total_grand)"/></div>
+                        <div><strong>In Words (English):</strong> <span t-out="o.get_mushak_amount_words_en(total_grand)"/></div>
                     </div>
 
                     <!-- Signatory -->
@@ -116,8 +115,8 @@
                         <div class="col-8">
                             <div style="font-size: 10px;">
                                 <em>প্রতিষ্ঠান কর্তৃপক্ষের দায়িত্বপ্রাপ্ত ব্যক্তির স্বাক্ষর:</em> ___________________________<br/>
-                                <em>নাম:</em> <span t-esc="o.mushak_signatory_id.name or o.create_uid.name"/><br/>
-                                <em>পদবি ও সীল:</em> <span t-esc="o.mushak_signatory_id.partner_id.function or 'Authorized Signatory'"/>
+                                <em>নাম:</em> <span t-out="o.mushak_signatory_id.name or o.create_uid.name"/><br/>
+                                <em>পদবি ও সীল:</em> <span t-out="o.mushak_signatory_id.partner_id.function or 'Authorized Signatory'"/>
                             </div>
                         </div>
                         <div class="col-4 text-end mushak_qr_box">

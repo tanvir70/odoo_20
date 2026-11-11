@@ -10,10 +10,44 @@ class TestMushakSdVat(TransactionCase):
         super().setUpClass()
         cls.company_bd = cls.env.company
         cls.company_bd.write({'mushak_bin': '1234567890123'})
+        cls.journal_sale = cls.env['account.journal'].search([
+            ('type', '=', 'sale'),
+            ('company_id', '=', cls.company_bd.id)
+        ], limit=1)
+        if not cls.journal_sale:
+            cls.journal_sale = cls.env['account.journal'].create({
+                'name': 'Customer Invoices',
+                'code': 'INV',
+                'type': 'sale',
+                'company_id': cls.company_bd.id,
+            })
+        cls.account_income = cls.env['account.account'].search([
+            ('account_type', '=', 'income'),
+            ('company_ids', 'in', [cls.company_bd.id])
+        ], limit=1)
+        if not cls.account_income:
+            cls.account_income = cls.env['account.account'].create({
+                'name': 'Product Sales Test',
+                'code': '400000',
+                'account_type': 'income',
+                'company_ids': [(4, cls.company_bd.id)],
+            })
+        cls.account_receivable = cls.env['account.account'].search([
+            ('account_type', '=', 'asset_receivable'),
+            ('company_ids', 'in', [cls.company_bd.id])
+        ], limit=1)
+        if not cls.account_receivable:
+            cls.account_receivable = cls.env['account.account'].create({
+                'name': 'Receivable Test',
+                'code': '120000',
+                'account_type': 'asset_receivable',
+                'company_ids': [(4, cls.company_bd.id)],
+            })
         cls.partner = cls.env['res.partner'].create({
             'name': 'Dhaka Buyer Corp',
             'mushak_bin': '9876543210123',
         })
+        cls.partner.property_account_receivable_id = cls.account_receivable
         cls.product = cls.env['product.product'].create({
             'name': 'Luxury Soft Drink',
             'type': 'consu',
@@ -108,15 +142,17 @@ class TestMushakSdVat(TransactionCase):
             'name': 'VAT 15% Incl',
             'type_tax_use': 'sale',
             'amount': 15.0,
-            'price_include': True,
+            'price_include_override': 'tax_included',
             'tax_group_id': self.tax_group_vat.id,
         })
         with self.assertRaises(ValidationError):
             invoice = self.env['account.move'].create({
                 'move_type': 'out_invoice',
+                'journal_id': self.journal_sale.id,
                 'partner_id': self.partner.id,
                 'invoice_line_ids': [(0, 0, {
                     'product_id': self.product.id,
+                    'account_id': self.account_income.id,
                     'price_unit': 1200.0,
                     'tax_ids': [(6, 0, [self.tax_sd_20.id, tax_vat_incl.id])],
                 })],

@@ -74,7 +74,10 @@ class AccountMoveLine(models.Model):
         for line in self:
             taxes = line.tax_ids
             if len(taxes) > 1:
-                price_included_flags = {tax.price_include for tax in taxes}
+                price_included_flags = {
+                    bool(tax.price_include or (getattr(tax, 'price_include_override', False) == 'tax_included'))
+                    for tax in taxes
+                }
                 if len(price_included_flags) > 1:
                     raise ValidationError(
                         _("Mixed tax inclusion (some taxes price-included and others price-excluded) "
@@ -88,7 +91,7 @@ class AccountMoveLine(models.Model):
     )
     def _compute_mushak_line_amounts(self):
         for line in self:
-            if line.display_type not in (False, 'product') or not line.move_id.is_invoice(include_receipts=True):
+            if line.display_type not in (False, 'product') or (line.move_id and not line.move_id.is_invoice(include_receipts=True)):
                 line.mushak_value_excl_tax = 0.0
                 line.mushak_sd_rate = 0.0
                 line.mushak_sd_amount = 0.0

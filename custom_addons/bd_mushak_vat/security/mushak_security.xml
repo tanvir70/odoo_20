@@ -1,47 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <record id="module_category_bd_mushak_vat" model="ir.module.category">
-        <field name="name">Bangladesh VAT &amp; Mushak</field>
-        <field name="description">Manage Bangladesh VAT Mushak compliance, sequences, reports, and VDS.</field>
-        <field name="sequence">55</field>
-    </record>
-
     <record id="group_mushak_user" model="res.groups">
         <field name="name">Mushak User</field>
-        <field name="category_id" ref="module_category_bd_mushak_vat"/>
         <field name="implied_ids" eval="[(4, ref('account.group_account_invoice'))]"/>
         <field name="comment">Can view Mushak fields, print 6.3/6.6/6.7/6.8 documents, and view registers.</field>
     </record>
 
     <record id="group_mushak_manager" model="res.groups">
         <field name="name">Mushak Manager</field>
-        <field name="category_id" ref="module_category_bd_mushak_vat"/>
         <field name="implied_ids" eval="[(4, ref('group_mushak_user')), (4, ref('account.group_account_manager'))]"/>
+        <field name="user_ids" eval="[(4, ref('base.user_root')), (4, ref('base.user_admin'))]"/>
         <field name="comment">Can configure VDS rules, edit sequences, cancel 6.6 certificates, and edit issue datetimes.</field>
-    </record>
-
-    <!-- Multi-Company Record Rules -->
-    <record id="rule_mushak_register_purchase_multicompany" model="ir.rule">
-        <field name="name">Mushak 6.1 Multi-Company</field>
-        <field name="model_id" ref="model_mushak_register_purchase"/>
-        <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
-    </record>
-
-    <record id="rule_mushak_register_sales_multicompany" model="ir.rule">
-        <field name="name">Mushak 6.2 Multi-Company</field>
-        <field name="model_id" ref="model_mushak_register_sales"/>
-        <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
-    </record>
-
-    <record id="rule_mushak_vds_certificate_multicompany" model="ir.rule">
-        <field name="name">Mushak 6.6 Multi-Company</field>
-        <field name="model_id" ref="model_mushak_vds_certificate"/>
-        <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
-    </record>
-
-    <record id="rule_mushak_vds_rule_multicompany" model="ir.rule">
-        <field name="name">Mushak VDS Rule Multi-Company</field>
-        <field name="model_id" ref="model_mushak_vds_rule"/>
-        <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
     </record>
 </odoo>

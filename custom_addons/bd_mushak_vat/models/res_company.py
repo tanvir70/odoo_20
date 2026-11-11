@@ -19,6 +19,11 @@ class ResCompany(models.Model):
         store=True,
         help='Check if this company withholds VAT on its vendor payments.',
     )
+    mushak_vds_entity_type = fields.Selection(
+        related='partner_id.mushak_vds_entity_type',
+        string='Withholding Entity Type',
+        readonly=False,
+    )
     mushak_vat_circle = fields.Char(
         string='VAT Circle / Division',
         help='Tax circle, division, or commissionerate to which the company reports.',

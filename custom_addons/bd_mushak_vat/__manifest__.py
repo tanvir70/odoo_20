@@ -14,7 +14,7 @@
     ],
     'data': [
         'security/mushak_security.xml',
-        'security/ir.model.access.csv',
+        'security/ir.access.csv',
         'data/ir_sequence_data.xml',
         'data/account_tax_data.xml',
         'data/mushak_vds_rule_data.xml',
@@ -23,8 +23,8 @@
         'views/res_config_settings_views.xml',
         'views/account_move_views.xml',
         'views/product_views.xml',
-        'views/mushak_vds_views.xml',
         'views/mushak_register_views.xml',
+        'views/mushak_vds_views.xml',
         'report/mushak_paperformat.xml',
         'report/mushak_63_report.xml',
         'report/mushak_66_report.xml',

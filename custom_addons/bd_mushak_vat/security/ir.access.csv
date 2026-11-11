@@ -1,0 +1,14 @@
+id,name,model_id,group_id/id,operation,domain
+access_mushak_register_purchase_user,mushak.register.purchase user,mushak.register.purchase,bd_mushak_vat.group_mushak_user,read,
+access_mushak_register_sales_user,mushak.register.sales user,mushak.register.sales,bd_mushak_vat.group_mushak_user,read,
+access_mushak_register_export_user,mushak.register.export user,mushak.register.export,bd_mushak_vat.group_mushak_user,crud,
+access_mushak_vds_rule_user,mushak.vds.rule user,mushak.vds.rule,bd_mushak_vat.group_mushak_user,read,
+access_mushak_vds_rule_manager,mushak.vds.rule manager,mushak.vds.rule,bd_mushak_vat.group_mushak_manager,crud,
+access_mushak_vds_certificate_user,mushak.vds.certificate user,mushak.vds.certificate,bd_mushak_vat.group_mushak_user,crud,
+access_mushak_vds_certificate_manager,mushak.vds.certificate manager,mushak.vds.certificate,bd_mushak_vat.group_mushak_manager,crud,
+access_mushak_vds_certificate_line_user,mushak.vds.certificate.line user,mushak.vds.certificate.line,bd_mushak_vat.group_mushak_user,crud,
+access_mushak_vds_certificate_line_manager,mushak.vds.certificate.line manager,mushak.vds.certificate.line,bd_mushak_vat.group_mushak_manager,crud,
+rule_mushak_register_purchase_multicompany,Mushak 6.1 Multi-Company,mushak.register.purchase,,crud,"['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]"
+rule_mushak_register_sales_multicompany,Mushak 6.2 Multi-Company,mushak.register.sales,,crud,"['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]"
+rule_mushak_vds_rule_multicompany,Mushak VDS Rule Multi-Company,mushak.vds.rule,,crud,"['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]"
+rule_mushak_vds_certificate_multicompany,Mushak 6.6 Multi-Company,mushak.vds.certificate,,crud,"['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]"

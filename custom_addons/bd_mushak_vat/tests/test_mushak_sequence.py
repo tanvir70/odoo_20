@@ -28,6 +28,36 @@ class TestMushakSequence(TransactionCase):
             ('type', '=', 'sale'),
             ('company_id', '=', cls.company_bd.id)
         ], limit=1)
+        if not cls.journal_sale:
+            cls.journal_sale = cls.env['account.journal'].create({
+                'name': 'Customer Invoices',
+                'code': 'INV',
+                'type': 'sale',
+                'company_id': cls.company_bd.id,
+            })
+        cls.account_income = cls.env['account.account'].search([
+            ('account_type', '=', 'income'),
+            ('company_ids', 'in', [cls.company_bd.id])
+        ], limit=1)
+        if not cls.account_income:
+            cls.account_income = cls.env['account.account'].create({
+                'name': 'Product Sales Test',
+                'code': '400000',
+                'account_type': 'income',
+                'company_ids': [(4, cls.company_bd.id)],
+            })
+        cls.account_receivable = cls.env['account.account'].search([
+            ('account_type', '=', 'asset_receivable'),
+            ('company_ids', 'in', [cls.company_bd.id])
+        ], limit=1)
+        if not cls.account_receivable:
+            cls.account_receivable = cls.env['account.account'].create({
+                'name': 'Receivable Test',
+                'code': '120000',
+                'account_type': 'asset_receivable',
+                'company_ids': [(4, cls.company_bd.id)],
+            })
+        cls.partner.property_account_receivable_id = cls.account_receivable
 
     def test_fiscal_year_sequence_boundary(self):
         """30 June 2026 is FY 2025-26 (prefix 2025-) and 1 July 2026 is FY 2026-27 (prefix 2026-)."""
@@ -56,6 +86,7 @@ class TestMushakSequence(TransactionCase):
             'journal_id': self.journal_sale.id,
             'invoice_line_ids': [(0, 0, {
                 'product_id': self.product.id,
+                'account_id': self.account_income.id,
                 'quantity': 1,
                 'price_unit': 1000.0,
             })],
@@ -87,6 +118,7 @@ class TestMushakSequence(TransactionCase):
             'journal_id': self.journal_sale.id,
             'invoice_line_ids': [(0, 0, {
                 'product_id': self.product.id,
+                'account_id': self.account_income.id,
                 'quantity': 1,
                 'price_unit': 500.0,
             })],
@@ -104,6 +136,7 @@ class TestMushakSequence(TransactionCase):
             'journal_id': self.journal_sale.id,
             'invoice_line_ids': [(0, 0, {
                 'product_id': self.product.id,
+                'account_id': self.account_income.id,
                 'quantity': 1,
                 'price_unit': 200.0,
             })],

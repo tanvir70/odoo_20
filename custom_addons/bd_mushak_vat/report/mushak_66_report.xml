@@ -6,7 +6,6 @@
         <field name="model">mushak.vds.certificate</field>
         <field name="report_type">qweb-pdf</field>
         <field name="report_name">bd_mushak_vat.report_mushak_66_document</field>
-        <field name="report_file">bd_mushak_vat.report_mushak_66_document</field>
         <field name="print_report_name">'Mushak-6.6-%s' % (object.name or 'Draft')</field>
         <field name="binding_model_id" ref="bd_mushak_vat.model_mushak_vds_certificate"/>
         <field name="binding_type">report</field>
@@ -40,25 +39,25 @@
                     <table class="mushak_box_table">
                         <tr>
                             <td style="width: 50%;">
-                                <strong>উৎস কর্তনকারী সত্তার নাম (Withholder Name):</strong> <span t-esc="o.company_id.name"/><br/>
-                                <strong>কর্তনকারী সত্তার বিআইএন (BIN):</strong> <span t-esc="o.company_id.mushak_bin or 'N/A'"/><br/>
-                                <strong>সার্কেল / কমিশনারেট:</strong> <span t-esc="o.company_id.mushak_vat_circle or 'Large Taxpayers Unit'"/><br/>
-                                <strong>ঠিকানা:</strong> <span t-esc="o.company_id.partner_id._display_address()"/>
+                                <strong>উৎস কর্তনকারী সত্তার নাম (Withholder Name):</strong> <span t-out="o.company_id.name"/><br/>
+                                <strong>কর্তনকারী সত্তার বিআইএন (BIN):</strong> <span t-out="o.company_id.mushak_bin or 'N/A'"/><br/>
+                                <strong>সার্কেল / কমিশনারেট:</strong> <span t-out="o.company_id.mushak_vat_circle or 'Large Taxpayers Unit'"/><br/>
+                                <strong>ঠিকানা:</strong> <span t-out="o.company_id.partner_id._display_address()"/>
                             </td>
                             <td style="width: 50%;">
                                 <strong>সনদপত্র নম্বর (Certificate No):</strong>
-                                <strong style="font-size: 13px;"><span t-esc="o.name or 'UNASSIGNED (DRAFT)'"/></strong><br/>
-                                <strong>ইস্যুর তারিখ (Issue Date):</strong> <span t-esc="o.date or ''"/><br/>
+                                <strong style="font-size: 13px;"><span t-out="o.name or 'UNASSIGNED (DRAFT)'"/></strong><br/>
+                                <strong>ইস্যুর তারিখ (Issue Date):</strong> <span t-out="o.date or ''"/><br/>
                                 <strong>জমার পদ্ধতি (Deposit Method):</strong>
-                                <span t-esc="dict(o._fields['deposit_method'].selection).get(o.deposit_method)"/><br/>
-                                <strong>জমা / রিটার্ন রেফারেন্স:</strong> <span t-esc="o.deposit_reference or o.tax_period or 'চলতি কর মেয়াদ'"/>
+                                <span t-out="dict(o._fields['deposit_method'].selection).get(o.deposit_method)"/><br/>
+                                <strong>জমা / রিটার্ন রেফারেন্স:</strong> <span t-out="o.deposit_reference or o.tax_period or 'চলতি কর মেয়াদ'"/>
                             </td>
                         </tr>
                         <tr>
                             <td colspan="2" style="border-top: 1px dotted #ccc; padding-top: 4px;">
-                                <strong>সরবরাহকারীর নাম (Supplier Name):</strong> <span t-esc="o.partner_id.name"/><br/>
-                                <strong>সরবরাহকারীর বিআইএন (Supplier BIN):</strong> <span t-esc="o.partner_id.mushak_bin or 'N/A'"/><br/>
-                                <strong>সরবরাহকারীর ঠিকানা:</strong> <span t-esc="o.partner_id._display_address()"/>
+                                <strong>সরবরাহকারীর নাম (Supplier Name):</strong> <span t-out="o.partner_id.name"/><br/>
+                                <strong>সরবরাহকারীর বিআইএন (Supplier BIN):</strong> <span t-out="o.partner_id.mushak_bin or 'N/A'"/><br/>
+                                <strong>সরবরাহকারীর ঠিকানা:</strong> <span t-out="o.partner_id._display_address()"/>
                             </td>
                         </tr>
                     </table>
@@ -83,15 +82,15 @@
 
                             <t t-foreach="o.line_ids" t-as="l">
                                 <tr>
-                                    <td class="text-center"><span t-esc="sl"/></td>
+                                    <td class="text-center"><span t-out="sl"/></td>
                                     <td>
-                                        <span t-esc="l.challan_number or 'N/A'"/>
-                                        <span t-if="l.challan_date" t-esc="' (তারিখ: ' + str(l.challan_date) + ')'"/>
+                                        <span t-out="l.challan_number or 'N/A'"/>
+                                        <span t-if="l.challan_date" t-out="' (তারিখ: ' + str(l.challan_date) + ')'"/>
                                     </td>
-                                    <td class="text-end"><span t-esc="'{:,.2f}'.format(l.value_excl_vat)"/></td>
-                                    <td class="text-end"><span t-esc="'{:,.2f}'.format(l.vat_amount)"/></td>
-                                    <td class="text-center"><span t-esc="l.vds_rate"/>%</td>
-                                    <td class="text-end"><strong><span t-esc="'{:,.2f}'.format(l.vds_amount)"/></strong></td>
+                                    <td class="text-end"><span t-out="'{:,.2f}'.format(l.value_excl_vat)"/></td>
+                                    <td class="text-end"><span t-out="'{:,.2f}'.format(l.vat_amount)"/></td>
+                                    <td class="text-center"><span t-out="l.vds_rate"/>%</td>
+                                    <td class="text-end"><strong><span t-out="'{:,.2f}'.format(l.vds_amount)"/></strong></td>
                                 </tr>
                                 <t t-set="sl" t-value="sl + 1"/>
                                 <t t-set="tot_val" t-value="tot_val + l.value_excl_vat"/>
@@ -101,10 +100,10 @@
 
                             <tr style="font-weight: bold; background-color: #f9f9f9;">
                                 <td colspan="2" class="text-end">সর্বমোট (Total):</td>
-                                <td class="text-end"><span t-esc="'{:,.2f}'.format(tot_val)"/></td>
-                                <td class="text-end"><span t-esc="'{:,.2f}'.format(tot_vat)"/></td>
+                                <td class="text-end"><span t-out="'{:,.2f}'.format(tot_val)"/></td>
+                                <td class="text-end"><span t-out="'{:,.2f}'.format(tot_vat)"/></td>
                                 <td></td>
-                                <td class="text-end"><strong><span t-esc="'{:,.2f}'.format(tot_vds)"/></strong></td>
+                                <td class="text-end"><strong><span t-out="'{:,.2f}'.format(tot_vds)"/></strong></td>
                             </tr>
                         </tbody>
                     </table>
@@ -112,10 +111,10 @@
                     <!-- Amount in Words -->
                     <div style="margin-top: 6px; padding: 4px; background-color: #fafafa; border: 1px solid #ddd;">
                         <div><strong>কথায় (বাংলা):</strong>
-                            <span t-esc="o.env['mushak.amount.words'].to_bangla(tot_vds)"/>
+                            <span t-out="o.env['mushak.amount.words'].to_bangla(tot_vds)"/>
                         </div>
                         <div><strong>In Words (English):</strong>
-                            <span t-esc="o.env['mushak.amount.words'].to_english(tot_vds)"/>
+                            <span t-out="o.env['mushak.amount.words'].to_english(tot_vds)"/>
                         </div>
                     </div>
 
@@ -125,8 +124,8 @@
                             <div style="font-size: 10px;">
                                 প্রত্যয়ন করা যাইতেছে যে, উপরে বর্ণিত সরবরাহকারীর নিকট হইতে উল্লেখিত পরিমাণ অর্থ উৎসে মূসক বাবদ কর্তন করা হইয়াছে যাহা বিধি মোতাবেক সরকারি কোষাগারে জমা / ভ্যাট রিটার্নে বৃদ্ধিকারী সমন্বয় করা হইবে।<br/><br/>
                                 <em>দায়িত্বপ্রাপ্ত কর্মকর্তার স্বাক্ষর ও নাম:</em> ___________________________<br/>
-                                <em>নাম:</em> <span t-esc="o.signatory_id.name or o.create_uid.name"/><br/>
-                                <em>পদবি ও সীল:</em> <span t-esc="o.signatory_id.partner_id.function or 'Authorized Signatory'"/>
+                                <em>নাম:</em> <span t-out="o.signatory_id.name or o.create_uid.name"/><br/>
+                                <em>পদবি ও সীল:</em> <span t-out="o.signatory_id.partner_id.function or 'Authorized Signatory'"/>
                             </div>
                         </div>
                         <div class="col-4 text-end mushak_qr_box">
@@ -135,7 +134,7 @@
                                      style="width: 75px; height: 75px;"/>
                                 <div style="font-size: 8px; color: #555;">
                                     Verify 6.6<br/>
-                                    <span t-esc="o.name"/>
+                                    <span t-out="o.name"/>
                                 </div>
                             </div>
                         </div>

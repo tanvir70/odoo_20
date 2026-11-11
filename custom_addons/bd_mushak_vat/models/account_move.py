@@ -138,11 +138,10 @@ class AccountMove(models.Model):
             else:
                 move.mushak_fiscal_year_label = f"{d.year - 1}-{str(d.year)[-2:]}"
 
-    def _get_mushak_sequence(self, code):
+    def _get_mushak_sequence(self, code, company=None):
         """Retrieve or create company-isolated sequence for Mushak documents."""
-        self.ensure_one()
+        company = company or (self.company_id if len(self) == 1 else self.env.company)
         Seq = self.env['ir.sequence'].sudo()
-        company = self.company_id
         seq = Seq.search([('code', '=', code), ('company_id', '=', company.id)], limit=1)
         if not seq:
             template = Seq.search([('code', '=', code), ('company_id', '=', False)], limit=1)
@@ -235,7 +234,8 @@ class AccountMove(models.Model):
     def get_mushak_verification_url(self):
         """Build public verification URL encoded in QR."""
         self.ensure_one()
-        base_url = self.env['ir.config_parameter'].sudo().get_param('web.base.url') or ''
+        ICP = self.env['ir.config_parameter'].sudo()
+        base_url = ICP.get_str('web.base.url', '') if hasattr(ICP, 'get_str') else (ICP.get_param('web.base.url') or '')
         return f"{base_url.rstrip('/')}/mushak/verify/{self.mushak_access_token or ''}"
 
     def get_mushak_amount_words_en(self, amount):

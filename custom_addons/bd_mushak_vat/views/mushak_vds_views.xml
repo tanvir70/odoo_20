@@ -149,6 +149,12 @@
                                 <field name="amount_total" class="oe_subtotal_footer_separator"/>
                             </group>
                         </page>
+                        <page string="Public QR Verification" name="verification" invisible="not mushak_access_token">
+                            <group>
+                                <field name="mushak_qr_code" widget="image" class="oe_avatar" readonly="1"/>
+                                <field name="mushak_verification_url" widget="url" readonly="1" text="Open Public Verification Portal ↗"/>
+                            </group>
+                        </page>
                     </notebook>
                 </sheet>
                 <chatter/>

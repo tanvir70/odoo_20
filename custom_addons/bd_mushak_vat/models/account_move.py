@@ -88,11 +88,50 @@ class AccountMove(models.Model):
         readonly=True,
         help='Cryptographic URL-safe token for public QR code verification.',
     )
+    mushak_qr_code = fields.Binary(
+        string='Verification QR Code',
+        compute='_compute_mushak_qr_code',
+        help='Scan with smartphone to verify authenticity on public NBR portal.',
+    )
+    mushak_verification_url = fields.Char(
+        string='Public Verification URL',
+        compute='_compute_mushak_verification_url',
+        help='Clickable public portal link for this document.',
+    )
     mushak_fiscal_year_label = fields.Char(
         string='Fiscal Year',
         compute='_compute_mushak_fiscal_year_label',
         help='Bangladesh fiscal year label (e.g. 2026-27).',
     )
+
+    @api.depends('mushak_access_token')
+    def _compute_mushak_qr_code(self):
+        import io
+        import qrcode
+        from odoo.tools.binary import BinaryBytes
+        for move in self:
+            if move.mushak_access_token:
+                try:
+                    url = move.get_mushak_verification_url()
+                    qr = qrcode.QRCode(version=1, box_size=3, border=1)
+                    qr.add_data(url)
+                    qr.make(fit=True)
+                    img = qr.make_image(fill_color="black", back_color="white")
+                    buffer = io.BytesIO()
+                    img.save(buffer, format="PNG")
+                    move.mushak_qr_code = BinaryBytes(buffer.getvalue())
+                except Exception:
+                    move.mushak_qr_code = False
+            else:
+                move.mushak_qr_code = False
+
+    @api.depends('mushak_access_token')
+    def _compute_mushak_verification_url(self):
+        for move in self:
+            if move.mushak_access_token:
+                move.mushak_verification_url = move.get_mushak_verification_url()
+            else:
+                move.mushak_verification_url = False
 
     @api.depends('journal_id', 'move_type', 'debit_origin_id', 'company_id.mushak_journal_ids')
     def _compute_mushak_form(self):

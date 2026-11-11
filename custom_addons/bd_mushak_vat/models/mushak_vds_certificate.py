@@ -110,6 +110,45 @@ class MushakVdsCertificate(models.Model):
         index=True,
         readonly=True,
     )
+    mushak_qr_code = fields.Binary(
+        string='Verification QR Code',
+        compute='_compute_mushak_qr_code',
+        help='Scan with smartphone to verify authenticity on public NBR portal.',
+    )
+    mushak_verification_url = fields.Char(
+        string='Public Verification URL',
+        compute='_compute_mushak_verification_url',
+        help='Clickable public portal link for this certificate.',
+    )
+
+    @api.depends('mushak_access_token')
+    def _compute_mushak_qr_code(self):
+        import io
+        import qrcode
+        from odoo.tools.binary import BinaryBytes
+        for cert in self:
+            if cert.mushak_access_token:
+                try:
+                    url = cert.get_mushak_verification_url()
+                    qr = qrcode.QRCode(version=1, box_size=3, border=1)
+                    qr.add_data(url)
+                    qr.make(fit=True)
+                    img = qr.make_image(fill_color="black", back_color="white")
+                    buffer = io.BytesIO()
+                    img.save(buffer, format="PNG")
+                    cert.mushak_qr_code = BinaryBytes(buffer.getvalue())
+                except Exception:
+                    cert.mushak_qr_code = False
+            else:
+                cert.mushak_qr_code = False
+
+    @api.depends('mushak_access_token')
+    def _compute_mushak_verification_url(self):
+        for cert in self:
+            if cert.mushak_access_token:
+                cert.mushak_verification_url = cert.get_mushak_verification_url()
+            else:
+                cert.mushak_verification_url = False
 
     @api.depends('line_ids.vds_amount')
     def _compute_amount_total(self):

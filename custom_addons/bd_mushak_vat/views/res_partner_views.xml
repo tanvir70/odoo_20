@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_partner_form_mushak" model="ir.ui.view">
+        <field name="name">res.partner.form.mushak</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//sheet" position="before">
+                <field name="mushak_bin_duplicate_warning" invisible="1"/>
+                <div class="alert alert-warning mb-0 text-center" role="alert"
+                     invisible="not mushak_bin_duplicate_warning">
+                    <field name="mushak_bin_duplicate_warning"/>
+                </div>
+            </xpath>
+            <xpath expr="//page[@name='sales_purchases']//group[@name='container_row_2']" position="inside">
+                <group string="Bangladesh VAT &amp; Mushak" name="mushak_vat">
+                    <field name="mushak_bin" placeholder="13 digits e-BIN"/>
+                    <field name="mushak_is_vds_entity"/>
+                    <field name="mushak_vds_entity_type"
+                           invisible="not mushak_is_vds_entity"
+                           required="mushak_is_vds_entity"/>
+                    <field name="mushak_supplier_type"/>
+                </group>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_res_partner_filter_mushak" model="ir.ui.view">
+        <field name="name">res.partner.select.mushak</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_res_partner_filter"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='name']" position="after">
+                <field name="mushak_bin" string="BIN"/>
+            </xpath>
+            <xpath expr="//filter[@name='filter_vat_set']" position="after">
+                <filter string="VDS Withholding Entities" name="filter_mushak_vds"
+                        domain="[('mushak_is_vds_entity', '=', True)]"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

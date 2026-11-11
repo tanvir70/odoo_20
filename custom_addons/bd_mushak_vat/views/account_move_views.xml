@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_move_form_mushak" model="ir.ui.view">
+        <field name="name">account.move.form.mushak</field>
+        <field name="model">account.move</field>
+        <field name="inherit_id" ref="account.view_move_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//sheet" position="before">
+                <field name="mushak_number" invisible="1"/>
+                <field name="mushak_form" invisible="1"/>
+                <div class="alert alert-info d-flex align-items-center justify-content-between mb-2"
+                     role="alert" invisible="not mushak_number">
+                    <div>
+                        <i class="oi oi-info me-2"/>
+                        <strong>Bangladesh Statutory Mushak <field name="mushak_form" readonly="1" class="d-inline"/></strong>:
+                        <span class="badge text-bg-primary fs-6 ms-2"><field name="mushak_number" readonly="1"/></span>
+                        <span class="ms-3 text-muted">Issued: <field name="mushak_issue_datetime" readonly="1"/></span>
+                    </div>
+                    <button name="action_regenerate_mushak_token"
+                            type="object"
+                            string="Regenerate QR Token"
+                            class="btn btn-sm btn-outline-secondary"
+                            groups="bd_mushak_vat.group_mushak_manager"
+                            help="Regenerates public verification token if compromised."/>
+                </div>
+            </xpath>
+
+            <xpath expr="//notebook" position="inside">
+                <page string="Bangladesh VAT &amp; Mushak" name="mushak_page"
+                      invisible="mushak_form == 'none' and move_type not in ('in_invoice', 'in_refund')">
+                    <group>
+                        <group string="Statutory Challan Information" invisible="mushak_form == 'none'">
+                            <field name="mushak_form" readonly="state == 'posted'"/>
+                            <field name="mushak_number" readonly="1"/>
+                            <field name="mushak_fiscal_year_label" readonly="1"/>
+                            <field name="mushak_issue_datetime"
+                                   readonly="not mushak_number or state == 'cancel'"/>
+                            <field name="mushak_signatory_id"/>
+                        </group>
+                        <group string="Transport &amp; Delivery" invisible="mushak_form == 'none'">
+                            <field name="mushak_vehicle_type" placeholder="e.g. Covered Van, Truck"/>
+                            <field name="mushak_vehicle_number" placeholder="e.g. Dhaka Metro-Ta 11-2345"/>
+                            <field name="mushak_delivery_address" placeholder="Final destination of supply"/>
+                        </group>
+                    </group>
+                    <group string="Debit / Credit Note Origin" invisible="mushak_form not in ('6.7', '6.8')">
+                        <field name="mushak_origin_number"
+                               required="mushak_form in ('6.7', '6.8')"/>
+                        <field name="mushak_origin_date"/>
+                        <field name="mushak_adjustment_reason"
+                               required="mushak_form in ('6.7', '6.8')"
+                               placeholder="Statutory reason for price or quantity adjustment"/>
+                    </group>
+                    <group string="Vendor Statutory Challan (Input VAT Claim)"
+                           invisible="move_type not in ('in_invoice', 'in_refund')">
+                        <field name="mushak_supplier_challan_number"
+                               placeholder="Vendor 6.3/6.7/6.8 challan number"/>
+                        <field name="mushak_supplier_challan_date"/>
+                    </group>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Search filter by Mushak Number -->
+    <record id="view_account_invoice_filter_mushak" model="ir.ui.view">
+        <field name="name">account.invoice.select.mushak</field>
+        <field name="model">account.move</field>
+        <field name="inherit_id" ref="account.view_account_invoice_filter"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='name']" position="after">
+                <field name="mushak_number" string="Mushak Challan No"/>
+                <field name="mushak_supplier_challan_number" string="Supplier Mushak Challan"/>
+            </xpath>
+            <xpath expr="//filter[@name='cancel']" position="after">
+                <separator/>
+                <filter string="Mushak 6.3 Invoices" name="filter_mushak_63"
+                        domain="[('mushak_form', '=', '6.3')]"/>
+                <filter string="Mushak 6.7 Credit Notes" name="filter_mushak_67"
+                        domain="[('mushak_form', '=', '6.7')]"/>
+                <filter string="Mushak 6.8 Debit Notes" name="filter_mushak_68"
+                        domain="[('mushak_form', '=', '6.8')]"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

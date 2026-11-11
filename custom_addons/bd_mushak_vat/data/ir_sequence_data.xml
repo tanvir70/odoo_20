@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <!-- Default Sequence Templates for Bangladesh VAT Statutory Documents -->
+    <record id="seq_mushak_63" model="ir.sequence">
+        <field name="name">Mushak 6.3 Tax Invoice (Challan)</field>
+        <field name="code">mushak.63</field>
+        <field name="prefix">%(range_year)s-</field>
+        <field name="padding">6</field>
+        <field name="use_date_range">True</field>
+        <field name="implementation">no_gap</field>
+        <field name="mushak_fiscal_july">True</field>
+        <field name="company_id" eval="False"/>
+    </record>
+
+    <record id="seq_mushak_67" model="ir.sequence">
+        <field name="name">Mushak 6.7 Credit Note</field>
+        <field name="code">mushak.67</field>
+        <field name="prefix">%(range_year)s-</field>
+        <field name="padding">6</field>
+        <field name="use_date_range">True</field>
+        <field name="implementation">no_gap</field>
+        <field name="mushak_fiscal_july">True</field>
+        <field name="company_id" eval="False"/>
+    </record>
+
+    <record id="seq_mushak_68" model="ir.sequence">
+        <field name="name">Mushak 6.8 Debit Note</field>
+        <field name="code">mushak.68</field>
+        <field name="prefix">%(range_year)s-</field>
+        <field name="padding">6</field>
+        <field name="use_date_range">True</field>
+        <field name="implementation">no_gap</field>
+        <field name="mushak_fiscal_july">True</field>
+        <field name="company_id" eval="False"/>
+    </record>
+
+    <record id="seq_mushak_66" model="ir.sequence">
+        <field name="name">Mushak 6.6 VDS Certificate</field>
+        <field name="code">mushak.66</field>
+        <field name="prefix">%(range_year)s-</field>
+        <field name="padding">6</field>
+        <field name="use_date_range">True</field>
+        <field name="implementation">no_gap</field>
+        <field name="mushak_fiscal_july">True</field>
+        <field name="company_id" eval="False"/>
+    </record>
+</odoo>

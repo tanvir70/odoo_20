@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Action Report for Mushak 6.6 Certificate -->
+    <record id="action_report_mushak_66" model="ir.actions.report">
+        <field name="name">Mushak 6.6 VDS Certificate</field>
+        <field name="model">mushak.vds.certificate</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">bd_mushak_vat.report_mushak_66_document</field>
+        <field name="report_file">bd_mushak_vat.report_mushak_66_document</field>
+        <field name="print_report_name">'Mushak-6.6-%s' % (object.name or 'Draft')</field>
+        <field name="binding_model_id" ref="bd_mushak_vat.model_mushak_vds_certificate"/>
+        <field name="binding_type">report</field>
+        <field name="paperformat_id" ref="paperformat_mushak_a4"/>
+    </record>
+
+    <!-- QWeb Template -->
+    <template id="report_mushak_66_document">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <div class="article mushak_page" t-att-data-oe-model="o._name" t-att-data-oe-id="o.id">
+                    <link rel="stylesheet" href="/bd_mushak_vat/static/src/css/mushak_report.css"/>
+
+                    <!-- Watermark if draft -->
+                    <div t-if="o.state == 'draft'" style="position: absolute; opacity: 0.15; transform: rotate(-35deg); font-size: 70px; font-weight: bold; top: 350px; left: 120px; z-index: 999; color: red;">
+                        DRAFT – NOT ISSUED
+                    </div>
+
+                    <!-- Header Block -->
+                    <div class="position-relative mushak_header">
+                        <div class="mushak_form_badge">
+                            মূসক-৬.৬<br/>
+                            <span style="font-size: 9px; font-weight: normal;">[উৎসে মূসক কর্তন ও আদায় বিধিমালা / বিধি ৪০]</span>
+                        </div>
+                        <h4>গণপ্রজাতন্ত্রী বাংলাদেশ সরকার</h4>
+                        <h5>জাতীয় রাজস্ব বোর্ড</h5>
+                        <h6>উৎসে কর কর্তন সনদপত্র / CERTIFICATE OF VAT DEDUCTED AT SOURCE</h6>
+                    </div>
+
+                    <!-- Header Meta Info -->
+                    <table class="mushak_box_table">
+                        <tr>
+                            <td style="width: 50%;">
+                                <strong>উৎস কর্তনকারী সত্তার নাম (Withholder Name):</strong> <span t-esc="o.company_id.name"/><br/>
+                                <strong>কর্তনকারী সত্তার বিআইএন (BIN):</strong> <span t-esc="o.company_id.mushak_bin or 'N/A'"/><br/>
+                                <strong>সার্কেল / কমিশনারেট:</strong> <span t-esc="o.company_id.mushak_vat_circle or 'Large Taxpayers Unit'"/><br/>
+                                <strong>ঠিকানা:</strong> <span t-esc="o.company_id.partner_id._display_address()"/>
+                            </td>
+                            <td style="width: 50%;">
+                                <strong>সনদপত্র নম্বর (Certificate No):</strong>
+                                <strong style="font-size: 13px;"><span t-esc="o.name or 'UNASSIGNED (DRAFT)'"/></strong><br/>
+                                <strong>ইস্যুর তারিখ (Issue Date):</strong> <span t-esc="o.date or ''"/><br/>
+                                <strong>জমার পদ্ধতি (Deposit Method):</strong>
+                                <span t-esc="dict(o._fields['deposit_method'].selection).get(o.deposit_method)"/><br/>
+                                <strong>জমা / রিটার্ন রেফারেন্স:</strong> <span t-esc="o.deposit_reference or o.tax_period or 'চলতি কর মেয়াদ'"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="2" style="border-top: 1px dotted #ccc; padding-top: 4px;">
+                                <strong>সরবরাহকারীর নাম (Supplier Name):</strong> <span t-esc="o.partner_id.name"/><br/>
+                                <strong>সরবরাহকারীর বিআইএন (Supplier BIN):</strong> <span t-esc="o.partner_id.mushak_bin or 'N/A'"/><br/>
+                                <strong>সরবরাহকারীর ঠিকানা:</strong> <span t-esc="o.partner_id._display_address()"/>
+                            </td>
+                        </tr>
+                    </table>
+
+                    <!-- Line Items Table -->
+                    <table class="mushak_lines_table">
+                        <thead>
+                            <tr>
+                                <th style="width: 5%;">১<br/>ক্রমিক</th>
+                                <th style="width: 35%;">২<br/>চালানপত্র নম্বর ও তারিখ (Challan No &amp; Date)</th>
+                                <th style="width: 15%;">৩<br/>মোট মূল্য (টাকা)</th>
+                                <th style="width: 15%;">৪<br/>প্রদেয় মূসক (টাকা)</th>
+                                <th style="width: 10%;">৫<br/>কর্তন হার (%)</th>
+                                <th style="width: 20%;">৬<br/>কর্তিত মূসকের পরিমাণ (টাকা)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <t t-set="sl" t-value="1"/>
+                            <t t-set="tot_val" t-value="0.0"/>
+                            <t t-set="tot_vat" t-value="0.0"/>
+                            <t t-set="tot_vds" t-value="0.0"/>
+
+                            <t t-foreach="o.line_ids" t-as="l">
+                                <tr>
+                                    <td class="text-center"><span t-esc="sl"/></td>
+                                    <td>
+                                        <span t-esc="l.challan_number or 'N/A'"/>
+                                        <span t-if="l.challan_date" t-esc="' (তারিখ: ' + str(l.challan_date) + ')'"/>
+                                    </td>
+                                    <td class="text-end"><span t-esc="'{:,.2f}'.format(l.value_excl_vat)"/></td>
+                                    <td class="text-end"><span t-esc="'{:,.2f}'.format(l.vat_amount)"/></td>
+                                    <td class="text-center"><span t-esc="l.vds_rate"/>%</td>
+                                    <td class="text-end"><strong><span t-esc="'{:,.2f}'.format(l.vds_amount)"/></strong></td>
+                                </tr>
+                                <t t-set="sl" t-value="sl + 1"/>
+                                <t t-set="tot_val" t-value="tot_val + l.value_excl_vat"/>
+                                <t t-set="tot_vat" t-value="tot_vat + l.vat_amount"/>
+                                <t t-set="tot_vds" t-value="tot_vds + l.vds_amount"/>
+                            </t>
+
+                            <tr style="font-weight: bold; background-color: #f9f9f9;">
+                                <td colspan="2" class="text-end">সর্বমোট (Total):</td>
+                                <td class="text-end"><span t-esc="'{:,.2f}'.format(tot_val)"/></td>
+                                <td class="text-end"><span t-esc="'{:,.2f}'.format(tot_vat)"/></td>
+                                <td></td>
+                                <td class="text-end"><strong><span t-esc="'{:,.2f}'.format(tot_vds)"/></strong></td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <!-- Amount in Words -->
+                    <div style="margin-top: 6px; padding: 4px; background-color: #fafafa; border: 1px solid #ddd;">
+                        <div><strong>কথায় (বাংলা):</strong>
+                            <span t-esc="o.env['mushak.amount.words'].to_bangla(tot_vds)"/>
+                        </div>
+                        <div><strong>In Words (English):</strong>
+                            <span t-esc="o.env['mushak.amount.words'].to_english(tot_vds)"/>
+                        </div>
+                    </div>
+
+                    <!-- Statutory Statement & Signature -->
+                    <div class="row mushak_declaration mt-4">
+                        <div class="col-8">
+                            <div style="font-size: 10px;">
+                                প্রত্যয়ন করা যাইতেছে যে, উপরে বর্ণিত সরবরাহকারীর নিকট হইতে উল্লেখিত পরিমাণ অর্থ উৎসে মূসক বাবদ কর্তন করা হইয়াছে যাহা বিধি মোতাবেক সরকারি কোষাগারে জমা / ভ্যাট রিটার্নে বৃদ্ধিকারী সমন্বয় করা হইবে।<br/><br/>
+                                <em>দায়িত্বপ্রাপ্ত কর্মকর্তার স্বাক্ষর ও নাম:</em> ___________________________<br/>
+                                <em>নাম:</em> <span t-esc="o.signatory_id.name or o.create_uid.name"/><br/>
+                                <em>পদবি ও সীল:</em> <span t-esc="o.signatory_id.partner_id.function or 'Authorized Signatory'"/>
+                            </div>
+                        </div>
+                        <div class="col-4 text-end mushak_qr_box">
+                            <div t-if="o.mushak_access_token">
+                                <img t-att-src="'/report/barcode/?barcode_type=QR&amp;value=%s&amp;width=100&amp;height=100' % (o.get_mushak_verification_url())"
+                                     style="width: 75px; height: 75px;"/>
+                                <div style="font-size: 8px; color: #555;">
+                                    Verify 6.6<br/>
+                                    <span t-esc="o.name"/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </t>
+        </t>
+    </template>
+</odoo>

@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <!-- Construction Contractor: S004.00 (10%) -->
+    <record id="vds_rule_s004_construction" model="mushak.vds.rule">
+        <field name="code">S004.00</field>
+        <field name="name">Construction contractor / নির্মাণ সংস্থা</field>
+        <field name="applies_to">service</field>
+        <field name="vds_rate">10.0</field>
+        <field name="date_from">2025-07-01</field>
+        <field name="legal_reference">SRO 182-Ain/2025/310-Mushak</field>
+    </record>
+
+    <!-- Advertising Agency: S003.00 (15%) -->
+    <record id="vds_rule_s003_advertising" model="mushak.vds.rule">
+        <field name="code">S003.00</field>
+        <field name="name">Advertising agency / বিজ্ঞাপন সংস্থা</field>
+        <field name="applies_to">service</field>
+        <field name="vds_rate">15.0</field>
+        <field name="date_from">2025-07-01</field>
+        <field name="legal_reference">SRO 182-Ain/2025/310-Mushak</field>
+    </record>
+
+    <!-- Legal Advisor: S015.00 (15%) -->
+    <record id="vds_rule_s015_legal" model="mushak.vds.rule">
+        <field name="code">S015.00</field>
+        <field name="name">Legal advisor &amp; consultant / পরামর্শক ও আইনি উপদেষ্টা</field>
+        <field name="applies_to">service</field>
+        <field name="vds_rate">15.0</field>
+        <field name="date_from">2025-07-01</field>
+        <field name="legal_reference">SRO 182-Ain/2025/310-Mushak</field>
+    </record>
+
+    <!-- Transport Contractor: S037.00 (10%) -->
+    <record id="vds_rule_s037_transport" model="mushak.vds.rule">
+        <field name="code">S037.00</field>
+        <field name="name">Transport contractor / পরিবহন ঠিকাদার</field>
+        <field name="applies_to">service</field>
+        <field name="vds_rate">10.0</field>
+        <field name="date_from">2025-07-01</field>
+        <field name="legal_reference">SRO 182-Ain/2025/310-Mushak</field>
+    </record>
+
+    <!-- Goods Procurement Provider (Trader): 10% -->
+    <record id="vds_rule_goods_trader" model="mushak.vds.rule">
+        <field name="code">G001.00</field>
+        <field name="name">Procurement provider (Trader supplies) / পণ্য সংগ্রহকারী</field>
+        <field name="applies_to">goods</field>
+        <field name="supplier_type">trader</field>
+        <field name="vds_rate">10.0</field>
+        <field name="date_from">2025-07-01</field>
+        <field name="legal_reference">SRO 182-Ain/2025/310-Mushak</field>
+    </record>
+
+    <!-- Manufacturer supply with 6.3: Exempt -->
+    <record id="vds_rule_goods_manufacturer_exempt" model="mushak.vds.rule">
+        <field name="code">G002.00</field>
+        <field name="name">Manufacturer supply backed by 6.3 / উৎপাদনকারী কর্তৃক সরবরাহ</field>
+        <field name="applies_to">goods</field>
+        <field name="supplier_type">manufacturer</field>
+        <field name="vds_rate">0.0</field>
+        <field name="exempt" eval="True"/>
+        <field name="date_from">2025-07-01</field>
+        <field name="legal_reference">SRO 182-Ain/2025/310-Mushak</field>
+    </record>
+</odoo>

@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Action Report for Mushak 6.7 Credit Note -->
+    <record id="action_report_mushak_67" model="ir.actions.report">
+        <field name="name">Mushak 6.7 Credit Note</field>
+        <field name="model">account.move</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">bd_mushak_vat.report_mushak_67_document</field>
+        <field name="report_file">bd_mushak_vat.report_mushak_67_document</field>
+        <field name="print_report_name">'Mushak-6.7-%s' % (object.mushak_number or object.name)</field>
+        <field name="binding_model_id" ref="account.model_account_move"/>
+        <field name="binding_type">report</field>
+        <field name="paperformat_id" ref="paperformat_mushak_a4"/>
+    </record>
+
+    <!-- QWeb Template -->
+    <template id="report_mushak_67_document">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <div class="article mushak_page" t-att-data-oe-model="o._name" t-att-data-oe-id="o.id">
+                    <link rel="stylesheet" href="/bd_mushak_vat/static/src/css/mushak_report.css"/>
+
+                    <!-- Header Block -->
+                    <div class="position-relative mushak_header">
+                        <div class="mushak_form_badge">
+                            মূসক-৬.৭<br/>
+                            <span style="font-size: 9px; font-weight: normal;">[বিধি ৪০ এর উপ-বিধি (১) এর দফা (ঙ)]</span>
+                        </div>
+                        <h4>গণপ্রজাতন্ত্রী বাংলাদেশ সরকার</h4>
+                        <h5>জাতীয় রাজস্ব বোর্ড</h5>
+                        <h6>ক্রেডিট নোট / CREDIT NOTE</h6>
+                    </div>
+
+                    <!-- Header Meta Info -->
+                    <table class="mushak_box_table">
+                        <tr>
+                            <td style="width: 50%;">
+                                <strong>ইস্যুকারী প্রতিষ্ঠানের নাম:</strong> <span t-esc="o.company_id.name"/><br/>
+                                <strong>বিআইএন (BIN):</strong> <span t-esc="o.company_id.mushak_bin or 'N/A'"/><br/>
+                                <strong>ঠিকানা:</strong> <span t-esc="o.company_id.partner_id._display_address()"/>
+                            </td>
+                            <td style="width: 50%;">
+                                <strong>ক্রেডিট নোট নম্বর:</strong>
+                                <strong style="font-size: 13px;"><span t-esc="o.mushak_number or 'UNASSIGNED (DRAFT)'"/></strong><br/>
+                                <strong>ইস্যুর তারিখ ও সময়:</strong> <span t-esc="o.mushak_issue_datetime or o.invoice_date or ''"/><br/>
+                                <strong>মূল চালানপত্র নম্বর (Original 6.3 No):</strong>
+                                <strong class="text-primary"><span t-esc="o.mushak_origin_number or 'N/A'"/></strong><br/>
+                                <strong>মূল চালানের তারিখ:</strong> <span t-esc="o.mushak_origin_date or 'N/A'"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="2" style="border-top: 1px dotted #ccc; padding-top: 4px;">
+                                <strong>গ্রহীতার নাম ও বিআইএন:</strong> <span t-esc="o.partner_id.name"/> (BIN: <span t-esc="o.partner_id.mushak_bin or 'N/A'"/>)<br/>
+                                <strong>হ্রাসকারী সমন্বয়ের কারণ (Reason):</strong>
+                                <em><span t-esc="o.mushak_adjustment_reason or 'None stated'"/></em>
+                            </td>
+                        </tr>
+                    </table>
+
+                    <!-- Line Items Table -->
+                    <table class="mushak_lines_table">
+                        <thead>
+                            <tr>
+                                <th>ক্রমিক</th>
+                                <th>পণ্য বা সেবার বিবরণ</th>
+                                <th>পরিমাণ (হ্রাসকৃত)</th>
+                                <th>একক মূল্য (টাকা)</th>
+                                <th>মোট মূল্য হ্রাস (টাকা)</th>
+                                <th>সম্পূরক শুল্ক হ্রাস (টাকা)</th>
+                                <th>মূসক হ্রাস (টাকা)</th>
+                                <th>সর্বমোট হ্রাসকৃত মূল্য (টাকা)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <t t-set="sl" t-value="1"/>
+                            <t t-set="total_val" t-value="0.0"/>
+                            <t t-set="total_sd" t-value="0.0"/>
+                            <t t-set="total_vat" t-value="0.0"/>
+                            <t t-set="total_grand" t-value="0.0"/>
+
+                            <t t-foreach="o.invoice_line_ids.filtered(lambda l: l.display_type in (False, 'product'))" t-as="line">
+                                <tr>
+                                    <td class="text-center"><span t-esc="o.format_mushak_num(sl)"/></td>
+                                    <td><span t-esc="line.name"/></td>
+                                    <td class="text-end"><span t-esc="o.format_mushak_num(abs(line.quantity))"/></td>
+                                    <td class="text-end"><span t-esc="o.format_mushak_num(line.price_unit)"/></td>
+                                    <td class="text-end"><span t-esc="o.format_mushak_num(abs(line.mushak_value_excl_tax))"/></td>
+                                    <td class="text-end"><span t-esc="o.format_mushak_num(abs(line.mushak_sd_amount))"/></td>
+                                    <td class="text-end"><span t-esc="o.format_mushak_num(abs(line.mushak_vat_amount))"/></td>
+                                    <td class="text-end"><strong><span t-esc="o.format_mushak_num(abs(line.mushak_value_incl_tax))"/></strong></td>
+                                </tr>
+                                <t t-set="sl" t-value="sl + 1"/>
+                                <t t-set="total_val" t-value="total_val + abs(line.mushak_value_excl_tax)"/>
+                                <t t-set="total_sd" t-value="total_sd + abs(line.mushak_sd_amount)"/>
+                                <t t-set="total_vat" t-value="total_vat + abs(line.mushak_vat_amount)"/>
+                                <t t-set="total_grand" t-value="total_grand + abs(line.mushak_value_incl_tax)"/>
+                            </t>
+
+                            <tr style="font-weight: bold; background-color: #f9f9f9;">
+                                <td colspan="4" class="text-end">মোট সমন্বয় (Total Adjustment):</td>
+                                <td class="text-end"><span t-esc="o.format_mushak_num(total_val)"/></td>
+                                <td class="text-end"><span t-esc="o.format_mushak_num(total_sd)"/></td>
+                                <td class="text-end"><span t-esc="o.format_mushak_num(total_vat)"/></td>
+                                <td class="text-end"><span t-esc="o.format_mushak_num(total_grand)"/></td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <div style="margin-top: 6px; padding: 4px; background-color: #fafafa; border: 1px solid #ddd;">
+                        <div><strong>কথায় (বাংলা):</strong> <span t-esc="o.get_mushak_amount_words_bn(total_grand)"/></div>
+                        <div><strong>In Words (English):</strong> <span t-esc="o.get_mushak_amount_words_en(total_grand)"/></div>
+                    </div>
+
+                    <!-- Signatory -->
+                    <div class="row mushak_declaration mt-4">
+                        <div class="col-8">
+                            <div style="font-size: 10px;">
+                                <em>প্রতিষ্ঠান কর্তৃপক্ষের দায়িত্বপ্রাপ্ত ব্যক্তির স্বাক্ষর:</em> ___________________________<br/>
+                                <em>নাম:</em> <span t-esc="o.mushak_signatory_id.name or o.create_uid.name"/><br/>
+                                <em>পদবি ও সীল:</em> <span t-esc="o.mushak_signatory_id.partner_id.function or 'Authorized Signatory'"/>
+                            </div>
+                        </div>
+                        <div class="col-4 text-end mushak_qr_box">
+                            <div t-if="o.mushak_access_token">
+                                <img t-att-src="'/report/barcode/?barcode_type=QR&amp;value=%s&amp;width=100&amp;height=100' % (o.get_mushak_verification_url())"
+                                     style="width: 75px; height: 75px;"/>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </t>
+        </t>
+    </template>
+</odoo>

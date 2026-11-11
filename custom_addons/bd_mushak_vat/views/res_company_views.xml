@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_company_form_mushak" model="ir.ui.view">
+        <field name="name">res.company.form.mushak</field>
+        <field name="model">res.company</field>
+        <field name="inherit_id" ref="base.view_company_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//notebook" position="inside">
+                <page string="Bangladesh VAT &amp; Mushak" name="bangladesh_vat">
+                    <group>
+                        <group string="Statutory Registration">
+                            <field name="mushak_bin" placeholder="13 digits e-BIN"/>
+                            <field name="mushak_vat_circle"/>
+                            <field name="mushak_signatory_id"/>
+                            <field name="mushak_show_bangla_digits"/>
+                        </group>
+                        <group string="VAT Withholding (VDS)">
+                            <field name="mushak_is_vds_entity"/>
+                            <field name="mushak_vds_include_sd"/>
+                            <field name="mushak_vds_payable_account_id"/>
+                            <field name="mushak_vds_receivable_account_id"/>
+                        </group>
+                    </group>
+                    <group string="Mushak-Enabled Sales Journals">
+                        <field name="mushak_journal_ids" widget="many2many_tags"/>
+                    </group>
+                </page>
+            </xpath>
+        </field>
+    </record>
+</odoo>

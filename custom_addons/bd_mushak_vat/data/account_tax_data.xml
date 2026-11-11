@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Supplementary Duty Tax Group -->
+    <record id="tax_group_bd_sd" model="account.tax.group">
+        <field name="name">Supplementary Duty</field>
+        <field name="country_id" ref="base.bd"/>
+        <field name="sequence">10</field>
+    </record>
+
+    <!-- SD Payable Account (Liability) -->
+    <record id="account_bd_sd_payable" model="account.account">
+        <field name="name">Supplementary Duty Payable</field>
+        <field name="code">211050</field>
+        <field name="account_type">liability_current</field>
+        <field name="reconcile" eval="False"/>
+    </record>
+
+    <!-- Tax Tags -->
+    <record id="tag_mushak_sd" model="account.account.tag">
+        <field name="name">+mushak_sd</field>
+        <field name="applicability">taxes</field>
+        <field name="country_id" ref="base.bd"/>
+    </record>
+
+    <record id="tag_mushak_vat" model="account.account.tag">
+        <field name="name">+mushak_vat</field>
+        <field name="applicability">taxes</field>
+        <field name="country_id" ref="base.bd"/>
+    </record>
+
+    <!-- Supplementary Duty Taxes (Sales) -->
+    <record id="tax_sale_sd_20" model="account.tax">
+        <field name="name">SD 20%</field>
+        <field name="type_tax_use">sale</field>
+        <field name="amount">20.0</field>
+        <field name="amount_type">percent</field>
+        <field name="description">SD 20%</field>
+        <field name="tax_group_id" ref="tax_group_bd_sd"/>
+        <field name="sequence">10</field>
+        <field name="include_base_amount" eval="True"/>
+        <field name="is_base_affected" eval="False"/>
+        <field name="country_id" ref="base.bd"/>
+        <field name="repartition_line_ids" eval="[
+            (5, 0, 0),
+            (0, 0, {'repartition_type': 'base', 'document_type': 'invoice'}),
+            (0, 0, {'repartition_type': 'tax', 'document_type': 'invoice', 'account_id': ref('account_bd_sd_payable'), 'tag_ids': [(4, ref('tag_mushak_sd'))]}),
+            (0, 0, {'repartition_type': 'base', 'document_type': 'refund'}),
+            (0, 0, {'repartition_type': 'tax', 'document_type': 'refund', 'account_id': ref('account_bd_sd_payable'), 'tag_ids': [(4, ref('tag_mushak_sd'))]}),
+        ]"/>
+    </record>
+
+    <record id="tax_sale_sd_10" model="account.tax">
+        <field name="name">SD 10%</field>
+        <field name="type_tax_use">sale</field>
+        <field name="amount">10.0</field>
+        <field name="amount_type">percent</field>
+        <field name="description">SD 10%</field>
+        <field name="tax_group_id" ref="tax_group_bd_sd"/>
+        <field name="sequence">10</field>
+        <field name="include_base_amount" eval="True"/>
+        <field name="is_base_affected" eval="False"/>
+        <field name="country_id" ref="base.bd"/>
+        <field name="repartition_line_ids" eval="[
+            (5, 0, 0),
+            (0, 0, {'repartition_type': 'base', 'document_type': 'invoice'}),
+            (0, 0, {'repartition_type': 'tax', 'document_type': 'invoice', 'account_id': ref('account_bd_sd_payable'), 'tag_ids': [(4, ref('tag_mushak_sd'))]}),
+            (0, 0, {'repartition_type': 'base', 'document_type': 'refund'}),
+            (0, 0, {'repartition_type': 'tax', 'document_type': 'refund', 'account_id': ref('account_bd_sd_payable'), 'tag_ids': [(4, ref('tag_mushak_sd'))]}),
+        ]"/>
+    </record>
+
+    <record id="tax_sale_sd_45" model="account.tax">
+        <field name="name">SD 45%</field>
+        <field name="type_tax_use">sale</field>
+        <field name="amount">45.0</field>
+        <field name="amount_type">percent</field>
+        <field name="description">SD 45%</field>
+        <field name="tax_group_id" ref="tax_group_bd_sd"/>
+        <field name="sequence">10</field>
+        <field name="include_base_amount" eval="True"/>
+        <field name="is_base_affected" eval="False"/>
+        <field name="country_id" ref="base.bd"/>
+        <field name="repartition_line_ids" eval="[
+            (5, 0, 0),
+            (0, 0, {'repartition_type': 'base', 'document_type': 'invoice'}),
+            (0, 0, {'repartition_type': 'tax', 'document_type': 'invoice', 'account_id': ref('account_bd_sd_payable'), 'tag_ids': [(4, ref('tag_mushak_sd'))]}),
+            (0, 0, {'repartition_type': 'base', 'document_type': 'refund'}),
+            (0, 0, {'repartition_type': 'tax', 'document_type': 'refund', 'account_id': ref('account_bd_sd_payable'), 'tag_ids': [(4, ref('tag_mushak_sd'))]}),
+        ]"/>
+    </record>
+
+    <!-- Purchase SD Taxes -->
+    <record id="tax_purchase_sd_20" model="account.tax">
+        <field name="name">Purchase SD 20%</field>
+        <field name="type_tax_use">purchase</field>
+        <field name="amount">20.0</field>
+        <field name="amount_type">percent</field>
+        <field name="description">Purchase SD 20%</field>
+        <field name="tax_group_id" ref="tax_group_bd_sd"/>
+        <field name="sequence">10</field>
+        <field name="include_base_amount" eval="True"/>
+        <field name="is_base_affected" eval="False"/>
+        <field name="country_id" ref="base.bd"/>
+    </record>
+</odoo>

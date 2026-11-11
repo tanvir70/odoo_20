@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="product_template_form_view_mushak" model="ir.ui.view">
+        <field name="name">product.template.form.mushak</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="account.product_template_form_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//group[@name='accounting']" position="inside">
+                <group string="Bangladesh VAT &amp; Customs (Mushak)" name="mushak_taxation">
+                    <field name="mushak_hs_code" placeholder="8-digit HS Code"/>
+                    <field name="mushak_vds_service_code_id"/>
+                </group>
+            </xpath>
+        </field>
+    </record>
+</odoo>

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="res_config_settings_view_form_mushak" model="ir.ui.view">
+        <field name="name">res.config.settings.view.form.mushak</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="account.res_config_settings_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//block[@name='default_taxes_setting_container']" position="after">
+                <block title="Bangladesh VAT &amp; Mushak" name="bd_mushak_vat_settings">
+                    <setting id="mushak_company_bin" string="Company BIN" help="13-digit Business Identification Number (VAT Registration Number).">
+                        <field name="mushak_bin" placeholder="13 digits e-BIN"/>
+                    </setting>
+                    <setting id="mushak_vat_circle_setting" string="VAT Circle" help="VAT Circle, Division, or Commissionerate.">
+                        <field name="mushak_vat_circle"/>
+                    </setting>
+                    <setting id="mushak_signatory_setting" string="Mushak Signatory" help="Default authorized signatory whose name appears on 6.3/6.6 documents.">
+                        <field name="mushak_signatory_id"/>
+                    </setting>
+                    <setting id="mushak_bangla_digits_setting" string="Bangla Numerals" help="Print numbers and totals in Bengali digits (০-৯) on printed Mushak forms.">
+                        <field name="mushak_show_bangla_digits"/>
+                    </setting>
+                    <setting id="mushak_vds_withholding_setting" string="VAT Withholding Entity" help="Check if this company is a designated withholding entity that must deduct VDS on vendor payments.">
+                        <field name="mushak_is_vds_entity"/>
+                    </setting>
+                    <setting id="mushak_vds_include_sd_setting" string="Include SD in VDS Base" help="Calculate VDS withholding on value inclusive of Supplementary Duty.">
+                        <field name="mushak_vds_include_sd"/>
+                    </setting>
+                    <setting id="mushak_vds_payable_setting" string="VDS Payable Account" help="Liability account for VAT withheld by us from our suppliers.">
+                        <field name="mushak_vds_payable_account_id"/>
+                    </setting>
+                    <setting id="mushak_vds_receivable_setting" string="VDS Receivable Account" help="Asset account for VAT withheld by customers pending receipt of Mushak 6.6 certificate.">
+                        <field name="mushak_vds_receivable_account_id"/>
+                    </setting>
+                    <setting id="mushak_journals_setting" string="Mushak Sales Journals" help="Sales journals configured for statutory Mushak 6.3 challan issuance.">
+                        <field name="mushak_journal_ids" widget="many2many_tags"/>
+                    </setting>
+                </block>
+            </xpath>
+        </field>
+    </record>
+</odoo>

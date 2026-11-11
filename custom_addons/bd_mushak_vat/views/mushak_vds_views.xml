@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- ============================================== -->
+    <!-- MUSHAK VDS RULES                               -->
+    <!-- ============================================== -->
+    <record id="view_mushak_vds_rule_tree" model="ir.ui.view">
+        <field name="name">mushak.vds.rule.tree</field>
+        <field name="model">mushak.vds.rule</field>
+        <field name="arch" type="xml">
+            <list string="VDS Withholding Rules">
+                <field name="code"/>
+                <field name="name"/>
+                <field name="applies_to"/>
+                <field name="supplier_type"/>
+                <field name="invoice_vat_rate"/>
+                <field name="vds_rate"/>
+                <field name="exempt"/>
+                <field name="date_from"/>
+                <field name="date_to"/>
+                <field name="legal_reference"/>
+                <field name="active" widget="boolean_toggle"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_mushak_vds_rule_form" model="ir.ui.view">
+        <field name="name">mushak.vds.rule.form</field>
+        <field name="model">mushak.vds.rule</field>
+        <field name="arch" type="xml">
+            <form string="Statutory VDS Withholding Rule">
+                <sheet>
+                    <div class="oe_title">
+                        <label for="name" class="oe_edit_only"/>
+                        <h1><field name="name" placeholder="e.g. Construction contractor"/></h1>
+                    </div>
+                    <group>
+                        <group string="Classification &amp; Rates">
+                            <field name="code" placeholder="e.g. S004.00"/>
+                            <field name="applies_to" widget="radio"/>
+                            <field name="supplier_type" invisible="applies_to != 'goods'"/>
+                            <field name="invoice_vat_rate"/>
+                            <field name="exempt"/>
+                            <field name="vds_rate" invisible="exempt"/>
+                        </group>
+                        <group string="Statutory Validity">
+                            <field name="date_from"/>
+                            <field name="date_to"/>
+                            <field name="legal_reference"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                            <field name="active"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_mushak_vds_rule" model="ir.actions.act_window">
+        <field name="name">VDS Withholding Rules</field>
+        <field name="res_model">mushak.vds.rule</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Define statutory VDS rates according to NBR SRO 182 / VDS Guidelines.
+            </p>
+        </field>
+    </record>
+
+    <!-- ============================================== -->
+    <!-- MUSHAK 6.6 VDS CERTIFICATES                    -->
+    <!-- ============================================== -->
+    <record id="view_mushak_vds_certificate_tree" model="ir.ui.view">
+        <field name="name">mushak.vds.certificate.tree</field>
+        <field name="model">mushak.vds.certificate</field>
+        <field name="arch" type="xml">
+            <list string="Mushak 6.6 Certificates">
+                <field name="name"/>
+                <field name="direction"/>
+                <field name="date"/>
+                <field name="partner_id"/>
+                <field name="amount_total" sum="Total Withheld"/>
+                <field name="deposit_method"/>
+                <field name="issue_deadline"/>
+                <field name="state" widget="badge"
+                       decoration-success="state in ('issued', 'received', 'adjusted')"
+                       decoration-warning="state == 'awaiting'"
+                       decoration-danger="state == 'cancel'"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_mushak_vds_certificate_form" model="ir.ui.view">
+        <field name="name">mushak.vds.certificate.form</field>
+        <field name="model">mushak.vds.certificate</field>
+        <field name="arch" type="xml">
+            <form string="Mushak 6.6 VDS Certificate">
+                <header>
+                    <button name="action_issue" string="Issue Certificate" type="object"
+                            class="oe_highlight" invisible="state != 'draft' or direction != 'issued'"/>
+                    <button name="action_mark_received" string="Mark Certificate Received" type="object"
+                            class="oe_highlight" invisible="state != 'awaiting' or direction != 'received'"/>
+                    <button name="action_mark_adjusted" string="Claim Decreasing Adjustment" type="object"
+                            class="btn-success" invisible="state != 'received' or direction != 'received'"/>
+                    <button name="action_cancel" string="Cancel Certificate" type="object"
+                            invisible="state in ('cancel', 'adjusted')"
+                            groups="bd_mushak_vat.group_mushak_manager"/>
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="draft,issued" invisible="direction != 'issued'"/>
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="awaiting,received,adjusted" invisible="direction != 'received'"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <label for="name" string="Certificate Number"/>
+                        <h1><field name="name" placeholder="Auto-assigned or enter Customer Cert No."
+                                   readonly="direction == 'issued' and state == 'issued'"/></h1>
+                    </div>
+                    <group>
+                        <group string="Document &amp; Party Details">
+                            <field name="direction" readonly="state != 'draft'"/>
+                            <field name="partner_id" readonly="state != 'draft'"/>
+                            <field name="date" readonly="state == 'issued'"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                            <field name="currency_id" invisible="1"/>
+                        </group>
+                        <group string="Deposit &amp; Compliance Deadlines">
+                            <field name="deposit_method"/>
+                            <field name="deposit_reference" placeholder="Challan No or Return Period"/>
+                            <field name="tax_period" placeholder="e.g. 2026-08"/>
+                            <field name="issue_deadline" readonly="1" invisible="direction != 'issued'"/>
+                            <field name="adjustment_deadline" readonly="1" invisible="direction != 'received'"/>
+                            <field name="signatory_id"/>
+                            <field name="payment_id" readonly="1"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Deduction Items" name="lines">
+                            <field name="line_ids">
+                                <list editable="bottom">
+                                    <field name="challan_number"/>
+                                    <field name="challan_date"/>
+                                    <field name="value_excl_vat" sum="Total Value"/>
+                                    <field name="vat_amount" sum="Total VAT"/>
+                                    <field name="vds_rate"/>
+                                    <field name="vds_amount" sum="Total VDS"/>
+                                </list>
+                            </field>
+                            <group class="oe_subtotal_footer oe_right">
+                                <field name="amount_total" class="oe_subtotal_footer_separator"/>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_mushak_vds_certificate" model="ir.actions.act_window">
+        <field name="name">Mushak 6.6 Certificates</field>
+        <field name="res_model">mushak.vds.certificate</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Mushak 6.6 Certificates generated automatically during payment registration.
+            </p>
+        </field>
+    </record>
+
+    <!-- Payment Register View Inheritance for VDS -->
+    <record id="view_account_payment_register_form_mushak" model="ir.ui.view">
+        <field name="name">account.payment.register.form.mushak</field>
+        <field name="model">account.payment.register</field>
+        <field name="inherit_id" ref="account.view_account_payment_register_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//group[@name='group2']" position="after">
+                <group string="Bangladesh VAT Deduction at Source (VDS)"
+                       invisible="not mushak_apply_vds">
+                    <field name="mushak_apply_vds"/>
+                    <field name="mushak_vds_rate" readonly="1"/>
+                    <field name="mushak_vds_amount" readonly="1"/>
+                    <field name="mushak_vds_account_id" readonly="1"/>
+                </group>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Configuration Menu Items -->
+    <menuitem id="menu_mushak_vds_rules"
+              name="VDS Withholding Rules"
+              parent="account.account_management_menu"
+              action="action_mushak_vds_rule"
+              sequence="35"
+              groups="bd_mushak_vat.group_mushak_manager"/>
+
+    <menuitem id="menu_mushak_vds_certificates"
+              name="Mushak 6.6 Certificates"
+              parent="menu_mushak_root"
+              action="action_mushak_vds_certificate"
+              sequence="25"/>
+</odoo>

@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- ============================================== -->
+    <!-- MUSHAK 6.1 PURCHASE REGISTER                   -->
+    <!-- ============================================== -->
+    <record id="view_mushak_register_purchase_tree" model="ir.ui.view">
+        <field name="name">mushak.register.purchase.tree</field>
+        <field name="model">mushak.register.purchase</field>
+        <field name="arch" type="xml">
+            <list string="Mushak 6.1 Purchase Register" create="0" delete="0" edit="0">
+                <field name="invoice_date"/>
+                <field name="move_id"/>
+                <field name="partner_name"/>
+                <field name="partner_bin"/>
+                <field name="supplier_challan_number"/>
+                <field name="supplier_challan_date"/>
+                <field name="product_name"/>
+                <field name="hs_code"/>
+                <field name="quantity" sum="Total Qty"/>
+                <field name="uom_name"/>
+                <field name="value_excl_tax" sum="Total Value"/>
+                <field name="sd_amount" sum="Total SD"/>
+                <field name="vat_amount" sum="Total VAT"/>
+                <field name="total_value" sum="Grand Total"/>
+                <field name="is_input_vat_claimable" widget="boolean_toggle"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_mushak_register_purchase_search" model="ir.ui.view">
+        <field name="name">mushak.register.purchase.search</field>
+        <field name="model">mushak.register.purchase</field>
+        <field name="arch" type="xml">
+            <search string="Search Purchase Register">
+                <field name="partner_name" string="Supplier"/>
+                <field name="partner_bin" string="Supplier BIN"/>
+                <field name="supplier_challan_number" string="Supplier Challan"/>
+                <field name="product_name" string="Product"/>
+                <filter string="Input VAT Claimable" name="claimable" domain="[('is_input_vat_claimable', '=', True)]"/>
+                <filter string="Missing Challan No" name="missing_challan" domain="['|', ('supplier_challan_number', '=', False), ('supplier_challan_number', '=', '')]"/>
+                <group expand="0" string="Group By">
+                    <filter string="Date" name="group_date" context="{'group_by': 'invoice_date:month'}"/>
+                    <filter string="Supplier" name="group_supplier" context="{'group_by': 'partner_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_mushak_register_61" model="ir.actions.act_window">
+        <field name="name">Mushak 6.1 Purchase Register</field>
+        <field name="res_model">mushak.register.purchase</field>
+        <field name="view_mode">list,pivot</field>
+        <field name="search_view_id" ref="view_mushak_register_purchase_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                No purchase transactions found for this period.
+            </p>
+        </field>
+    </record>
+
+    <!-- ============================================== -->
+    <!-- MUSHAK 6.2 SALES REGISTER                      -->
+    <!-- ============================================== -->
+    <record id="view_mushak_register_sales_tree" model="ir.ui.view">
+        <field name="name">mushak.register.sales.tree</field>
+        <field name="model">mushak.register.sales</field>
+        <field name="arch" type="xml">
+            <list string="Mushak 6.2 Sales Register" create="0" delete="0" edit="0"
+                  decoration-muted="state == 'cancel'">
+                <field name="invoice_date"/>
+                <field name="mushak_number"/>
+                <field name="mushak_form"/>
+                <field name="issue_datetime"/>
+                <field name="partner_name"/>
+                <field name="partner_bin"/>
+                <field name="product_name"/>
+                <field name="hs_code"/>
+                <field name="quantity" sum="Total Qty"/>
+                <field name="uom_name"/>
+                <field name="value_excl_tax" sum="Total Value"/>
+                <field name="sd_amount" sum="Total SD"/>
+                <field name="vat_amount" sum="Total VAT"/>
+                <field name="total_value" sum="Grand Total"/>
+                <field name="state" widget="badge"
+                       decoration-success="state == 'posted'"
+                       decoration-danger="state == 'cancel'"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_mushak_register_sales_search" model="ir.ui.view">
+        <field name="name">mushak.register.sales.search</field>
+        <field name="model">mushak.register.sales</field>
+        <field name="arch" type="xml">
+            <search string="Search Sales Register">
+                <field name="mushak_number" string="Challan Number"/>
+                <field name="partner_name" string="Buyer"/>
+                <field name="partner_bin" string="Buyer BIN"/>
+                <field name="product_name" string="Product"/>
+                <filter string="Posted Challans" name="filter_posted" domain="[('state', '=', 'posted')]"/>
+                <filter string="Cancelled Challans" name="filter_cancelled" domain="[('state', '=', 'cancel')]"/>
+                <group expand="0" string="Group By">
+                    <filter string="Date" name="group_date" context="{'group_by': 'invoice_date:month'}"/>
+                    <filter string="Form Type" name="group_form" context="{'group_by': 'mushak_form'}"/>
+                    <filter string="Buyer" name="group_buyer" context="{'group_by': 'partner_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_mushak_register_62" model="ir.actions.act_window">
+        <field name="name">Mushak 6.2 Sales Register</field>
+        <field name="res_model">mushak.register.sales</field>
+        <field name="view_mode">list,pivot</field>
+        <field name="search_view_id" ref="view_mushak_register_sales_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                No sales challans recorded for this period.
+            </p>
+        </field>
+    </record>
+
+    <!-- ============================================== -->
+    <!-- EXPORT WIZARD VIEW                             -->
+    <!-- ============================================== -->
+    <record id="view_mushak_register_export_wizard" model="ir.ui.view">
+        <field name="name">mushak.register.export.wizard</field>
+        <field name="model">mushak.register.export</field>
+        <field name="arch" type="xml">
+            <form string="Export Statutory Bangladesh VAT Registers">
+                <group>
+                    <group>
+                        <field name="register_type" widget="radio"/>
+                        <field name="company_id" groups="base.group_multi_company"/>
+                    </group>
+                    <group>
+                        <field name="date_from"/>
+                        <field name="date_to"/>
+                        <field name="include_cancelled" invisible="register_type != '6.2'"/>
+                    </group>
+                </group>
+                <footer>
+                    <button name="action_export_xlsx" string="Download Excel (.XLSX)"
+                            type="object" class="btn-primary" icon="fa-download"/>
+                    <button name="action_view_on_screen" string="View on Screen"
+                            type="object" class="btn-secondary"/>
+                    <button string="Cancel" class="btn-default" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_mushak_register_export_wizard" model="ir.actions.act_window">
+        <field name="name">Export Mushak Registers</field>
+        <field name="res_model">mushak.register.export</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+    <!-- ============================================== -->
+    <!-- MENUS UNDER ACCOUNTING > REPORTING             -->
+    <!-- ============================================== -->
+    <menuitem id="menu_mushak_root"
+              name="Bangladesh VAT (Mushak)"
+              parent="account.menu_finance_reports"
+              sequence="45"
+              groups="bd_mushak_vat.group_mushak_user"/>
+
+    <menuitem id="menu_mushak_register_61"
+              name="Mushak 6.1 Purchase Register"
+              parent="menu_mushak_root"
+              action="action_mushak_register_61"
+              sequence="10"/>
+
+    <menuitem id="menu_mushak_register_62"
+              name="Mushak 6.2 Sales Register"
+              parent="menu_mushak_root"
+              action="action_mushak_register_62"
+              sequence="20"/>
+
+    <menuitem id="menu_mushak_register_export"
+              name="Export Registers (XLSX)"
+              parent="menu_mushak_root"
+              action="action_mushak_register_export_wizard"
+              sequence="30"/>
+</odoo>

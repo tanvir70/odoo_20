@@ -62,7 +62,7 @@ class MushakRegisterSales(models.Model):
                         WHEN am.move_type = 'out_refund' THEN -aml.quantity
                         ELSE aml.quantity
                     END AS quantity,
-                    uom.name AS uom_name,
+                    COALESCE(uom.name->>'en_US', uom.name::text) AS uom_name,
                     CASE
                         WHEN am.state = 'cancel' THEN 0.0
                         ELSE aml.mushak_value_excl_tax_company_curr

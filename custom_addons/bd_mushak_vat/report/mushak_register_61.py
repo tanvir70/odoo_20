@@ -50,7 +50,7 @@ class MushakRegisterPurchase(models.Model):
                     aml.name AS product_name,
                     pt.mushak_hs_code AS hs_code,
                     CASE WHEN am.move_type = 'in_refund' THEN -aml.quantity ELSE aml.quantity END AS quantity,
-                    uom.name AS uom_name,
+                    COALESCE(uom.name->>'en_US', uom.name::text) AS uom_name,
                     aml.mushak_value_excl_tax_company_curr AS value_excl_tax,
                     aml.mushak_sd_amount_company_curr AS sd_amount,
                     aml.mushak_vat_amount_company_curr AS vat_amount,

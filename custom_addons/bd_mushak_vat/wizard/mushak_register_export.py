@@ -134,20 +134,27 @@ class MushakRegisterExport(models.TransientModel):
         row += 1
         start_data_row = row + 1  # 1-indexed for excel formula
 
+        def _to_str(val):
+            if val is None or val is False:
+                return ''
+            if isinstance(val, dict):
+                return val.get('en_US') or next(iter(val.values()), '') or ''
+            return str(val)
+
         for idx, rec in enumerate(records, start=1):
             if self.register_type == '6.1':
                 worksheet.write(row, 0, idx, cell_format)
                 worksheet.write(row, 1, str(rec.invoice_date or ''), cell_format)
-                worksheet.write(row, 2, rec.move_id.name or '', cell_format)
-                worksheet.write(row, 3, rec.partner_name or '', cell_format)
-                worksheet.write(row, 4, rec.partner_bin or '', cell_format)
-                worksheet.write(row, 5, rec.partner_address or '', cell_format)
-                worksheet.write(row, 6, rec.supplier_challan_number or '', cell_format)
+                worksheet.write(row, 2, _to_str(rec.move_id.name), cell_format)
+                worksheet.write(row, 3, _to_str(rec.partner_name), cell_format)
+                worksheet.write(row, 4, _to_str(rec.partner_bin), cell_format)
+                worksheet.write(row, 5, _to_str(rec.partner_address), cell_format)
+                worksheet.write(row, 6, _to_str(rec.supplier_challan_number), cell_format)
                 worksheet.write(row, 7, str(rec.supplier_challan_date or ''), cell_format)
-                worksheet.write(row, 8, rec.product_name or '', cell_format)
-                worksheet.write(row, 9, rec.hs_code or '', cell_format)
+                worksheet.write(row, 8, _to_str(rec.product_name), cell_format)
+                worksheet.write(row, 9, _to_str(rec.hs_code), cell_format)
                 worksheet.write(row, 10, rec.quantity, num_format)
-                worksheet.write(row, 11, rec.uom_name or '', cell_format)
+                worksheet.write(row, 11, _to_str(rec.uom_name), cell_format)
                 worksheet.write(row, 12, rec.value_excl_tax, num_format)
                 worksheet.write(row, 13, rec.sd_amount, num_format)
                 worksheet.write(row, 14, rec.vat_amount, num_format)
@@ -156,21 +163,21 @@ class MushakRegisterExport(models.TransientModel):
             else:
                 worksheet.write(row, 0, idx, cell_format)
                 worksheet.write(row, 1, str(rec.invoice_date or ''), cell_format)
-                worksheet.write(row, 2, rec.mushak_number or '', cell_format)
-                worksheet.write(row, 3, rec.mushak_form or '', cell_format)
+                worksheet.write(row, 2, _to_str(rec.mushak_number), cell_format)
+                worksheet.write(row, 3, _to_str(rec.mushak_form), cell_format)
                 worksheet.write(row, 4, str(rec.issue_datetime or ''), cell_format)
-                worksheet.write(row, 5, rec.partner_name or '', cell_format)
-                worksheet.write(row, 6, rec.partner_bin or '', cell_format)
-                worksheet.write(row, 7, rec.partner_address or '', cell_format)
-                worksheet.write(row, 8, rec.product_name or '', cell_format)
-                worksheet.write(row, 9, rec.hs_code or '', cell_format)
+                worksheet.write(row, 5, _to_str(rec.partner_name), cell_format)
+                worksheet.write(row, 6, _to_str(rec.partner_bin), cell_format)
+                worksheet.write(row, 7, _to_str(rec.partner_address), cell_format)
+                worksheet.write(row, 8, _to_str(rec.product_name), cell_format)
+                worksheet.write(row, 9, _to_str(rec.hs_code), cell_format)
                 worksheet.write(row, 10, rec.quantity, num_format)
-                worksheet.write(row, 11, rec.uom_name or '', cell_format)
+                worksheet.write(row, 11, _to_str(rec.uom_name), cell_format)
                 worksheet.write(row, 12, rec.value_excl_tax, num_format)
                 worksheet.write(row, 13, rec.sd_amount, num_format)
                 worksheet.write(row, 14, rec.vat_amount, num_format)
                 worksheet.write(row, 15, rec.total_value, num_format)
-                worksheet.write(row, 16, rec.state or '', cell_format)
+                worksheet.write(row, 16, _to_str(rec.state), cell_format)
             row += 1
 
         end_data_row = row  # 1-indexed
@@ -217,7 +224,7 @@ class MushakRegisterExport(models.TransientModel):
         attachment = self.env['ir.attachment'].create({
             'name': file_name,
             'type': 'binary',
-            'datas': base64.b64encode(file_data),
+            'raw': file_data,
             'mimetype': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
             'res_model': self._name,
             'res_id': self.id,

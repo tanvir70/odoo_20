@@ -47,7 +47,7 @@
                             <td style="width: 50%;">
                                 <strong>সনদপত্র নম্বর (Certificate No):</strong>
                                 <strong style="font-size: 13px;"><span t-out="o.name or 'UNASSIGNED (DRAFT)'"/></strong><br/>
-                                <strong>ইস্যুর তারিখ (Issue Date):</strong> <span t-out="o.date or ''"/><br/>
+                                <strong>ইস্যুর তারিখ (Issue Date):</strong> <span t-out="o.date.strftime('%d/%m/%Y') if o.date else ''"/><br/>
                                 <strong>জমার পদ্ধতি (Deposit Method):</strong>
                                 <span t-out="dict(o._fields['deposit_method'].selection).get(o.deposit_method)"/><br/>
                                 <strong>জমা / রিটার্ন রেফারেন্স:</strong> <span t-out="o.deposit_reference or o.tax_period or 'চলতি কর মেয়াদ'"/>

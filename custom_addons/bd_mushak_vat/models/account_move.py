@@ -277,6 +277,55 @@ class AccountMove(models.Model):
         base_url = ICP.get_str('web.base.url', '') if hasattr(ICP, 'get_str') else (ICP.get_param('web.base.url') or '')
         return f"{base_url.rstrip('/')}/mushak/verify/{self.mushak_access_token or ''}"
 
+    def get_mushak_issue_time(self):
+        """Format issue time in Bangladesh Timezone (Asia/Dhaka), e.g. '01:23 PM'."""
+        self.ensure_one()
+        dt = self.mushak_issue_datetime
+        if not dt:
+            return ''
+        import pytz
+        tz_name = self.env.user.tz or 'Asia/Dhaka'
+        try:
+            target_tz = pytz.timezone(tz_name)
+        except Exception:
+            target_tz = pytz.timezone('Asia/Dhaka')
+        utc_dt = pytz.utc.localize(dt) if dt.tzinfo is None else dt
+        local_dt = utc_dt.astimezone(target_tz)
+        res = local_dt.strftime('%I:%M %p')
+        if self.company_id.mushak_show_bangla_digits:
+            return self.env['mushak.amount.words'].to_bn_digits(res)
+        return res
+
+    def get_mushak_issue_date(self):
+        """Format statutory issue date as DD/MM/YYYY."""
+        self.ensure_one()
+        d = self.invoice_date
+        if not d and self.mushak_issue_datetime:
+            import pytz
+            tz_name = self.env.user.tz or 'Asia/Dhaka'
+            try:
+                target_tz = pytz.timezone(tz_name)
+            except Exception:
+                target_tz = pytz.timezone('Asia/Dhaka')
+            dt = self.mushak_issue_datetime
+            utc_dt = pytz.utc.localize(dt) if dt.tzinfo is None else dt
+            d = utc_dt.astimezone(target_tz).date()
+        if not d:
+            return ''
+        res = d.strftime('%d/%m/%Y')
+        if self.company_id.mushak_show_bangla_digits:
+            return self.env['mushak.amount.words'].to_bn_digits(res)
+        return res
+
+    def get_mushak_issue_datetime_str(self):
+        """Format full issue date and time in Bangladesh Timezone."""
+        self.ensure_one()
+        time_str = self.get_mushak_issue_time()
+        date_str = self.get_mushak_issue_date()
+        if date_str and time_str:
+            return f"{date_str}, {time_str}"
+        return date_str or time_str or ''
+
     def get_mushak_amount_words_en(self, amount):
         """Return South Asian English amount in words."""
         return self.env['mushak.amount.words'].to_english(amount)

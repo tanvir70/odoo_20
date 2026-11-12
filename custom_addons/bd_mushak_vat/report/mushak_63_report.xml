@@ -48,9 +48,9 @@
                                 <strong>চালানপত্র নম্বর (Challan No):</strong>
                                 <strong style="font-size: 13px;"><span t-out="o.mushak_number or 'UNASSIGNED (DRAFT)'"/></strong><br/>
                                 <strong>ইস্যুর তারিখ (Issue Date):</strong>
-                                <span t-out="o.invoice_date or ''"/><br/>
+                                <span t-out="o.get_mushak_issue_date()"/><br/>
                                 <strong>ইস্যুর সময় (Issue Time):</strong>
-                                <span t-out="o.mushak_issue_datetime or ''"/><br/>
+                                <span t-out="o.get_mushak_issue_time()"/><br/>
                                 <strong>অর্থবছর (Fiscal Year):</strong>
                                 <span t-out="o.mushak_fiscal_year_label or ''"/>
                             </td>

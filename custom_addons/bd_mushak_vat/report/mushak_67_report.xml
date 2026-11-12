@@ -41,10 +41,10 @@
                             <td style="width: 50%;">
                                 <strong>ক্রেডিট নোট নম্বর:</strong>
                                 <strong style="font-size: 13px;"><span t-out="o.mushak_number or 'UNASSIGNED (DRAFT)'"/></strong><br/>
-                                <strong>ইস্যুর তারিখ ও সময়:</strong> <span t-out="o.mushak_issue_datetime or o.invoice_date or ''"/><br/>
+                                <strong>ইস্যুর তারিখ ও সময়:</strong> <span t-out="o.get_mushak_issue_datetime_str()"/><br/>
                                 <strong>মূল চালানপত্র নম্বর (Original 6.3 No):</strong>
                                 <strong class="text-primary"><span t-out="o.mushak_origin_number or 'N/A'"/></strong><br/>
-                                <strong>মূল চালানের তারিখ:</strong> <span t-out="o.mushak_origin_date or 'N/A'"/>
+                                <strong>মূল চালানের তারিখ:</strong> <span t-out="o.mushak_origin_date.strftime('%d/%m/%Y') if o.mushak_origin_date else 'N/A'"/>
                             </td>
                         </tr>
                         <tr>

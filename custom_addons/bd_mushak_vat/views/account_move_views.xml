@@ -12,8 +12,8 @@
                      role="alert" invisible="not mushak_number">
                     <div class="d-flex align-items-center">
                         <field name="mushak_qr_code" widget="image" readonly="1"
-                               class="bg-white border rounded p-1 me-3"
-                               style="width: 60px; height: 60px; min-width: 60px;"/>
+                               options="{'size': [60, 60], 'img_class': 'bg-white border rounded p-1'}"
+                               class="me-3" nolabel="1"/>
                         <div>
                             <div>
                                 <i class="oi oi-info me-1"/>
